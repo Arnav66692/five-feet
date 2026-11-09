@@ -33,6 +33,12 @@ const THREAT_BY_ITEM: {[displayName: string]: string} = {
   "Wood mulch bed": "Threat: embers, flames and heat.",
   "Attached wood fence": "Threat: embers, flames and heat.",
 }
+// Other hazards for the same item (flood, tornado, earthquake), shown last on its card. Keyed by displayName.
+const OTHER_HAZARDS_BY_ITEM: {[displayName: string]: string} = {
+  "Firewood stack": "Tornado: loose logs fly. Flood: they float.",
+  "Wood mulch bed": "Flood: mulch washes into drains.",
+  "Small potted plant": "Tornado: bring pots inside. Earthquake: keep them off ledges.",
+}
 
 @component
 export class FiveFeetMain extends BaseScriptComponent {
@@ -220,9 +226,25 @@ export class FiveFeetMain extends BaseScriptComponent {
   private updateItemDistances(): void {
     if (this.items.length === 0) return
     const eye = WorldCameraFinderProvider.getInstance().getWorldPosition()
-    for (const item of this.items) this.refreshFar(item, eye)
+    for (const item of this.items) this.announceIfNear(item, this.refreshFar(item, eye))
     this.layoutBadges(eye)
     this.layoutWallUi(eye)
+  }
+
+  /** For blind and low-vision users: say each item's name, distance and side once as you walk up to it. */
+  private announceIfNear(item: FiveFeetItem, distCm: number): void {
+    if (item.isFar()) {
+      this.announced.delete(item)
+      return
+    }
+    if (this.announced.has(item) || !this.voice) return
+    this.announced.add(item)
+    const cam = WorldCameraFinderProvider.getInstance()
+    const rel = item.getTransform().getWorldPosition().sub(cam.getWorldPosition())
+    const side = rel.dot(cam.getTransform().right) > 0 ? "on your right" : "on your left"
+    const line = item.displayName + ", " + (distCm / 100).toFixed(1) + " meters, " + side + ". Pinch to hear what to do."
+    this.voice.speak(line)
+    print("[FiveFeet] announce: " + line)
   }
 
   /**
@@ -447,6 +469,8 @@ export class FiveFeetMain extends BaseScriptComponent {
     return this.touchActive || getTime() - this.lastTouchEndTime < TOUCH_SETTLE_SEC
   }
 
+  private announced = new Set<FiveFeetItem>()
+
   private onItemPinched(item: FiveFeetItem, fromTap: boolean = false): void {
     if (!fromTap && this.isTouchInput()) return // a mouse or touch press: resolved on release instead
     // The same tap that pressed Done must not also pinch the item behind the card.
@@ -463,6 +487,8 @@ export class FiveFeetMain extends BaseScriptComponent {
     let reason = hasVerdict ? item.reason : ""
     const threat = THREAT_BY_ITEM[item.displayName]
     if (hasVerdict && threat) reason = threat + " " + reason
+    const other = OTHER_HAZARDS_BY_ITEM[item.displayName]
+    if (other) reason = reason.length > 0 ? reason + " " + other : other
     let color = hasVerdict ? item.verdictColor : new vec4(1, 1, 1, 1)
     let action = item.action.trim().length > 0 ? item.action : this.nothingToDoLine
     if (item.isFixed()) {
