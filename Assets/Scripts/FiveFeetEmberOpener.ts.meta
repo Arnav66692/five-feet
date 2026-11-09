@@ -29,6 +29,7 @@
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     emberCount: false
+    emberHaloMaterial: false
     emberMaterial: false
     emberMesh: false
     emberSizeCm: false
@@ -36,9 +37,11 @@
     embersPerSafeItem: false
     fallSec: false
     glowSec: false
+    haloSizeCm: false
     seed: false
     spawnWindowSec: false
     startDelaySec: false
+    windDriftCm: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -50,6 +53,7 @@
   DefaultScriptInputs:
     - emberMesh: !<reference.RenderMesh> 00000000-0000-0000-0000-000000000000
       emberMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
+      emberHaloMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
       emberCount: !<float> 20.000000
       embersPerCombustible: !<float> 3.000000
       embersPerSafeItem: !<float> 1.000000
@@ -57,6 +61,8 @@
       spawnWindowSec: !<float> 2.000000
       fallSec: !<float> 1.000000
       emberSizeCm: 3.500000
+      haloSizeCm: !<float> 8.000000
+      windDriftCm: !<float> 30.000000
       glowSec: 1.500000
       seed: !<float> 7.000000
   ScriptTypes:
@@ -68,7 +74,8 @@
     - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">References</span>"}'
     - '// @ui {"widget":"group_start", "label":"References"}'
     - '// @input Asset.RenderMesh emberMesh {"hint":"Mesh for one ember (a small sphere)"}'
-    - '// @input Asset.Material emberMaterial {"hint":"Bright orange unlit material for the embers (keep light: the display is additive)"}'
+    - '// @input Asset.Material emberMaterial {"hint":"Bright unlit material for the ember core (keep light: the display is additive)"}'
+    - '// @input Asset.Material emberHaloMaterial {"hint":"Faint see-through material for the soft halo around each core (optional)"}'
     - '// @ui {"widget":"group_end"}'
     - '// @ui {"widget":"separator"}'
     - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Settings</span>"}'
@@ -79,7 +86,9 @@
     - '// @input float startDelaySec = 0.2 {"hint":"Seconds before the first ember appears", "widget":"slider", "min":0, "max":2, "step":0.05}'
     - '// @input float spawnWindowSec = 2 {"hint":"Seconds over which the embers are released", "widget":"slider", "min":0.5, "max":4, "step":0.1}'
     - '// @input float fallSec = 1 {"hint":"Seconds one ember takes to fall from above the roof to the ground", "widget":"slider", "min":0.3, "max":3, "step":0.1}'
-    - '// @input float emberSizeCm = 5 {"hint":"Ember diameter (cm)", "widget":"slider", "min":1, "max":8, "step":0.5}'
+    - '// @input float emberSizeCm = 2.5 {"hint":"Diameter (cm) of the bright core of an ember (brief: 2 to 3 cm)", "widget":"slider", "min":1, "max":8, "step":0.5}'
+    - '// @input float haloSizeCm = 8 {"hint":"Diameter (cm) of the faint halo around the core", "widget":"slider", "min":2, "max":20, "step":0.5}'
+    - '// @input float windDriftCm = 30 {"hint":"How far (cm) the wind carries an ember sideways while it falls", "widget":"slider", "min":0, "max":80, "step":1}'
     - '// @input float glowSec = 1.5 {"hint":"Seconds a combustible item glows after an ember lands on it (brief: about 1.5 s)", "widget":"slider", "min":0.5, "max":4, "step":0.1}'
     - '// @input float seed = 7 {"hint":"Seed for the landing pattern, so every run looks the same"}'
     - '// @ui {"widget":"group_end"}'

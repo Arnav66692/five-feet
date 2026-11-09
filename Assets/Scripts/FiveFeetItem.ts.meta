@@ -38,6 +38,8 @@
     fixedColor: false
     fixedLabel: false
     glowColor: false
+    glowFadeSec: false
+    glowStrength: false
     hitBoxSizeCm: false
     hoverStrength: false
     hoverTint: false
@@ -75,6 +77,8 @@
       debugCollider: false
       combustible: false
       glowColor: !<Vec4> {x: 1.000000, y: 0.450000, z: 0.100000, w: 1.000000}
+      glowStrength: 0.600000
+      glowFadeSec: 0.350000
   ScriptTypes:
     -
       {}
@@ -118,4 +122,6 @@
     - '// @ui {"widget":"group_start", "label":"Embers"}'
     - '// @input bool combustible {"hint":"Catches embers (wood, mulch). Embers that land on it make it glow. A small nonwoody plant does not"}'
     - "// @input vec4 glowColor = \"{1,0.45,0.1,1}\" {\"hint\":\"Color the item's meshes blend toward while an ember makes it glow\", \"widget\":\"color\"}"
+    - "// @input float glowStrength = 0.6 {\"hint\":\"Strongest blend toward the glow color (0 to 1). Below 1 so the item's own colors still show\", \"widget\":\"slider\", \"min\":0.1, \"max\":1, \"step\":0.05}"
+    - "// @input float glowFadeSec = 0.35 {\"hint\":\"Seconds the glow takes to fade back to the item's own colors at the end\", \"widget\":\"slider\", \"min\":0, \"max\":1, \"step\":0.05}"
     - '// @ui {"widget":"group_end"}'

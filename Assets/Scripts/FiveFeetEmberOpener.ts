@@ -6,7 +6,10 @@
  *   anything else (ground, the plant) lets the ember fade out.
  *   Origin of THIS SceneObject = where the wall face meets the ground (same frame as Zone0Ring),
  *   +Z away from the wall toward the user, X along the wall.
- * Expects @inputs: emberMesh, emberMaterial. Items are passed to play() by FiveFeetMain.
+ * Each ember is a small bright core inside three faint, larger halo shells (EmberCore / EmberHalo),
+ *   flickering, and drifting a little sideways on the wind as it falls.
+ * Expects @inputs: emberMesh, emberMaterial (core), emberHaloMaterial (faint, see-through).
+ *   Items are passed to play() by FiveFeetMain.
  * Public API: play(items), isComplete(), getSpawnedCount(), getLandedCount(), getSpawnTimes(), getHitCounts(),
  *   getCompleteTime(), onComplete.
  * Must NOT: start the Zone 0 line or touch the card. FiveFeetMain sequences the opener and the line.
@@ -23,9 +26,14 @@ const GROUND_Z_MIN_CM = 15
 const GROUND_Z_MAX_CM = 280
 const HIT_PAD_CM = 2
 const FADE_SEC = 0.5
+// Relative sizes of the faint additive halo shells. Where they overlap they add up, so the glow is
+// brightest next to the core and falls off toward the edge.
+const HALO_SHELLS = [0.4, 0.7, 1]
 
 type Ember = {
   so: SceneObject
+  core: Transform
+  halos: Transform[]
   from: vec3
   to: vec3
   spawnAt: number
@@ -45,8 +53,13 @@ export class FiveFeetEmberOpener extends BaseScriptComponent {
   emberMesh: RenderMesh
 
   @input
-  @hint("Bright orange unlit material for the embers (keep light: the display is additive)")
+  @hint("Bright unlit material for the ember core (keep light: the display is additive)")
   emberMaterial: Material
+
+  @input
+  @allowUndefined
+  @hint("Faint see-through material for the soft halo around each core (optional)")
+  emberHaloMaterial: Material
   @ui.group_end
 
   @ui.separator
@@ -83,9 +96,19 @@ export class FiveFeetEmberOpener extends BaseScriptComponent {
   fallSec: number = 1.0
 
   @input
-  @hint("Ember diameter (cm)")
+  @hint("Diameter (cm) of the bright core of an ember (brief: 2 to 3 cm)")
   @widget(new SliderWidget(1, 8, 0.5))
-  emberSizeCm: number = 5
+  emberSizeCm: number = 2.5
+
+  @input
+  @hint("Diameter (cm) of the faint halo around the core")
+  @widget(new SliderWidget(2, 20, 0.5))
+  haloSizeCm: number = 8
+
+  @input
+  @hint("How far (cm) the wind carries an ember sideways while it falls")
+  @widget(new SliderWidget(0, 80, 1))
+  windDriftCm: number = 30
 
   @input
   @hint("Seconds a combustible item glows after an ember lands on it (brief: about 1.5 s)")
@@ -175,12 +198,17 @@ export class FiveFeetEmberOpener extends BaseScriptComponent {
     const step = count > 1 ? this.spawnWindowSec / (count - 1) : 0
     return targets.map((to, i) => {
       const from = new vec3(
-        to.x + this.rand(-40, 40),
+        to.x - this.windDriftCm + this.rand(-8, 8),
         ROOF_TOP_CM + this.rand(0, 40),
         this.rand(SPAWN_Z_MIN_CM, SPAWN_Z_MAX_CM)
       )
+      const so = this.makeEmber(i)
       return {
-        so: this.makeEmber(i),
+        so,
+        core: so.getChild(0).getTransform(),
+        halos: HALO_SHELLS.map((_, n) => n + 1)
+          .filter((c) => c < so.getChildrenCount())
+          .map((c) => so.getChild(c).getTransform()),
         from,
         to,
         spawnAt: this.startDelaySec + i * step,
@@ -208,14 +236,35 @@ export class FiveFeetEmberOpener extends BaseScriptComponent {
     )
   }
 
+  /** Ember_NN / EmberCore (bright, small) + EmberHalo shells (faint, larger, additive). */
   private makeEmber(i: number): SceneObject {
     const so = global.scene.createSceneObject("Ember_" + (i < 9 ? "0" : "") + (i + 1))
     so.setParent(this.sceneObject)
-    const rmv = so.createComponent("Component.RenderMeshVisual") as RenderMeshVisual
-    rmv.mesh = this.emberMesh
-    rmv.mainMaterial = this.emberMaterial
+    this.addSphere(so, "EmberCore", this.emberMaterial)
+    if (this.emberHaloMaterial) {
+      for (let n = 0; n < HALO_SHELLS.length; n++) this.addSphere(so, "EmberHalo", this.emberHaloMaterial)
+    }
     so.enabled = false
     return so
+  }
+
+  private addSphere(parent: SceneObject, name: string, material: Material): void {
+    const so = global.scene.createSceneObject(name)
+    so.setParent(parent)
+    const rmv = so.createComponent("Component.RenderMeshVisual") as RenderMeshVisual
+    rmv.mesh = this.emberMesh
+    rmv.mainMaterial = material
+  }
+
+  /** Size the core and halos. `fade` shrinks everything to nothing as an ember dies. */
+  private sizeEmber(e: Ember, fade: number): void {
+    const time = this.elapsed + e.wobblePhase
+    const coreFlicker = 1 + 0.15 * Math.sin(time * 31) + 0.08 * Math.sin(time * 53)
+    e.core.setLocalScale(vec3.one().uniformScale(this.emberSizeCm * coreFlicker * fade))
+    e.halos.forEach((h, n) => {
+      const haloFlicker = 1 + 0.2 * Math.sin(time * (17 + n * 6) + n)
+      h.setLocalScale(vec3.one().uniformScale(this.haloSizeCm * HALO_SHELLS[n] * haloFlicker * fade))
+    })
   }
 
   private onUpdate(): void {
@@ -244,12 +293,11 @@ export class FiveFeetEmberOpener extends BaseScriptComponent {
   private stepFall(e: Ember, dt: number): void {
     e.t = Math.min(1, e.t + dt / Math.max(0.05, this.fallSec))
     const k = e.t * e.t * (3 - 2 * e.t) // smooth start and landing
-    const wobble = Math.sin(e.wobblePhase + e.t * 9) * 6 * (1 - e.t)
+    // A gentle flutter on top of the steady wind drift, gone by the time the ember lands.
+    const wobble = Math.sin(e.wobblePhase + e.t * 9) * 4 * (1 - e.t)
     const p = vec3.lerp(e.from, e.to, k).add(new vec3(wobble, 0, wobble * 0.5))
-    const t = e.so.getTransform()
-    t.setLocalPosition(p)
-    const flicker = 1 + 0.25 * Math.sin((this.elapsed + e.wobblePhase) * 30)
-    t.setLocalScale(vec3.one().uniformScale(this.emberSizeCm * flicker))
+    e.so.getTransform().setLocalPosition(p)
+    this.sizeEmber(e, 1)
     if (e.t >= 1) this.land(e)
   }
 
@@ -270,7 +318,7 @@ export class FiveFeetEmberOpener extends BaseScriptComponent {
 
   private stepFade(e: Ember, dt: number): void {
     e.t = Math.min(1, e.t + dt / FADE_SEC)
-    e.so.getTransform().setLocalScale(vec3.one().uniformScale(this.emberSizeCm * (1 - e.t)))
+    this.sizeEmber(e, 1 - e.t)
     if (e.t >= 1) {
       e.so.enabled = false
       e.state = "done"

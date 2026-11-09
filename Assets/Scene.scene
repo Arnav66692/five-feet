@@ -7,7 +7,7 @@
     - !<own> 92406d58-7677-4902-ae90-c698f042bf12
     - !<own> d0277ae5-7d9a-416d-9c93-47487cf0f1da
     - !<own> 31f7f7b7-5877-4c5b-be32-d5c18bb81f0a
-    - !<own> 073c8ab6-ccf6-4e13-af66-46d2154289fa
+    - !<own> 31090593-fbb4-40e6-81ab-28019ac87e6a
   layers: !<Layers/267ee9a7-aff2-4f9d-9a49-f71214747d03>
     userLayers:
       - id: 1
@@ -378,21 +378,6 @@
   BlendNormals: false
   BlendShapes:
     {}
-- !<SceneObject/073c8ab6-ccf6-4e13-af66-46d2154289fa>
-  PrefabRemaps:
-    []
-  Name: AiPreviewAgent Handler
-  Enabled: true
-  Layers: 1
-  LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
-    HasSegmentScaleCompensation: false
-  Children:
-    []
-  Components:
-    - !<own> 99fb7d42-819b-46d5-b845-f998ba78989f
 - !<SceneObject/07f44f11-7485-4295-8420-09b6b3794443>
   PrefabRemaps:
     []
@@ -1721,6 +1706,21 @@
   BlendNormals: false
   BlendShapes:
     {}
+- !<SceneObject/31090593-fbb4-40e6-81ab-28019ac87e6a>
+  PrefabRemaps:
+    []
+  Name: AiPreviewAgent Handler
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 7706d103-d960-436c-980c-775cfb91e5d1
 - !<RenderMeshVisual/312e1e19-044e-4980-9316-fdf5d601332d>
   PrefabRemaps:
     []
@@ -2120,6 +2120,8 @@
     hoverStrength: true
     debugCollider: true
     glowColor: true
+    glowStrength: true
+    glowFadeSec: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -2143,6 +2145,8 @@
       debugCollider: false
       combustible: true
       glowColor: !<Vec4> {x: 1.000000, y: 0.450000, z: 0.100000, w: 1.000000}
+      glowStrength: 0.600000
+      glowFadeSec: 0.350000
   ScriptTypes:
     "":
       {}
@@ -2347,6 +2351,8 @@
     startDelaySec: true
     spawnWindowSec: true
     fallSec: true
+    haloSizeCm: true
+    windDriftCm: true
     glowSec: true
     seed: true
   ScriptTypesDefault:
@@ -2355,13 +2361,16 @@
     "":
       emberMesh: !<reference.RenderMesh> 302c101a-4e21-430d-b304-7877cde92cef
       emberMaterial: !<reference.Material> 47d3cfcd-74f0-4ba2-be82-628129ed56ba
+      emberHaloMaterial: !<reference.Material> 7568b9ae-15d5-4445-afdd-9d13406717c0
       emberCount: !<float> 20.000000
       embersPerCombustible: !<float> 3.000000
       embersPerSafeItem: !<float> 1.000000
       startDelaySec: 0.200000
       spawnWindowSec: !<float> 2.000000
       fallSec: !<float> 1.000000
-      emberSizeCm: !<float> 5.000000
+      emberSizeCm: 2.500000
+      haloSizeCm: !<float> 8.000000
+      windDriftCm: !<float> 30.000000
       glowSec: 1.500000
       seed: !<float> 7.000000
   ScriptTypes:
@@ -2469,9 +2478,9 @@
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: -0.500000, z: 500.000000}
+    Position: {x: 0.000000, y: -0.500000, z: 550.000000}
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Scale: {x: 1000.000000, y: 1.000000, z: 400.000000}
+    Scale: {x: 1000.000000, y: 1.000000, z: 500.000000}
     HasSegmentScaleCompensation: false
   Children:
     []
@@ -2545,6 +2554,8 @@
     hoverStrength: true
     debugCollider: true
     glowColor: true
+    glowStrength: true
+    glowFadeSec: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -2568,6 +2579,8 @@
       debugCollider: false
       combustible: true
       glowColor: !<Vec4> {x: 1.000000, y: 0.450000, z: 0.100000, w: 1.000000}
+      glowStrength: 0.600000
+      glowFadeSec: 0.350000
   ScriptTypes:
     "":
       {}
@@ -3196,6 +3209,8 @@
     hoverStrength: true
     debugCollider: true
     glowColor: true
+    glowStrength: true
+    glowFadeSec: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -3219,6 +3234,8 @@
       debugCollider: false
       combustible: true
       glowColor: !<Vec4> {x: 1.000000, y: 0.450000, z: 0.100000, w: 1.000000}
+      glowStrength: 0.600000
+      glowFadeSec: 0.350000
   ScriptTypes:
     "":
       {}
@@ -3631,6 +3648,22 @@
     []
   Components:
     - !<own> 03555d32-e217-4e3f-9853-ba814505fd93
+- !<ScriptComponent/7706d103-d960-436c-980c-775cfb91e5d1>
+  PrefabRemaps:
+    []
+  Name: AgentInspectScript
+  Enabled: true
+  ScriptAsset: !<reference> 0b25079c-f5bf-4c6d-96c4-f43b89dfa213
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      {}
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/77a69dd6-c1bb-4502-8777-495251a12abe>
   PrefabRemaps:
     []
@@ -4377,22 +4410,6 @@
     - !<own> a4de4ce7-f468-4966-8a06-e29eea60c023
   Components:
     []
-- !<ScriptComponent/99fb7d42-819b-46d5-b845-f998ba78989f>
-  PrefabRemaps:
-    []
-  Name: AgentInspectScript
-  Enabled: true
-  ScriptAsset: !<reference> 0b25079c-f5bf-4c6d-96c4-f43b89dfa213
-  ScriptInputsDefault:
-    {}
-  ScriptTypesDefault:
-    {}
-  ScriptInputs:
-    "":
-      {}
-  ScriptTypes:
-    "":
-      {}
 - !<RenderMeshVisual/9a3a3b4b-43ef-4d98-b1e9-8589bb7ddb92>
   PrefabRemaps:
     []
@@ -5278,6 +5295,8 @@
     debugCollider: true
     combustible: true
     glowColor: true
+    glowStrength: true
+    glowFadeSec: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -5301,6 +5320,8 @@
       debugCollider: false
       combustible: false
       glowColor: !<Vec4> {x: 1.000000, y: 0.450000, z: 0.100000, w: 1.000000}
+      glowStrength: 0.600000
+      glowFadeSec: 0.350000
   ScriptTypes:
     "":
       {}
@@ -5625,7 +5646,7 @@
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: -0.500000, z: -175.000000}
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Scale: {x: 600.000000, y: 1.000000, z: 450.000000}
+    Scale: {x: 1000.000000, y: 1.000000, z: 450.000000}
     HasSegmentScaleCompensation: false
   Children:
     []

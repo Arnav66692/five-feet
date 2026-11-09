@@ -126,6 +126,16 @@ export class FiveFeetItem extends BaseScriptComponent {
   @hint("Color the item's meshes blend toward while an ember makes it glow")
   @widget(new ColorWidget())
   glowColor: vec4 = new vec4(1, 0.45, 0.1, 1)
+
+  @input
+  @hint("Strongest blend toward the glow color (0 to 1). Below 1 so the item's own colors still show")
+  @widget(new SliderWidget(0.1, 1, 0.05))
+  glowStrength: number = 0.6
+
+  @input
+  @hint("Seconds the glow takes to fade back to the item's own colors at the end")
+  @widget(new SliderWidget(0, 1, 0.05))
+  glowFadeSec: number = 0.35
   @ui.group_end
 
   private readonly pinchedEvent = new Event<FiveFeetItem>()
@@ -299,10 +309,19 @@ export class FiveFeetItem extends BaseScriptComponent {
     this.wasGlowing = glowing
   }
 
+  /** 0 when not glowing. Otherwise a pulse up to glowStrength that fades out over the last glowFadeSec. */
+  private glowAmount(): number {
+    const remaining = this.glowUntil - getTime()
+    if (remaining <= 0) return 0
+    const fade = this.glowFadeSec > 0 ? Math.min(1, remaining / this.glowFadeSec) : 1
+    const pulse = 0.75 + 0.25 * Math.sin(getTime() * 14)
+    return this.glowStrength * pulse * fade
+  }
+
   /** Combine the hover tint and the pulsing ember glow on top of each mesh's base color. */
   private applyTint(): void {
     const hover = this.hoverCount > 0
-    const glow = this.isGlowing() ? 0.7 + 0.25 * Math.sin(getTime() * 16) : 0
+    const glow = this.glowAmount()
     for (let i = 0; i < this.materials.length; i++) {
       const base = this.baseColors[i]
       let c = hover ? vec4.lerp(base, this.hoverTint, this.hoverStrength) : base
