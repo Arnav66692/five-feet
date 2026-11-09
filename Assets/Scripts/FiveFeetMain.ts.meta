@@ -28,14 +28,25 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
+    badgeDistanceCm: false
+    badgeHysteresisCm: false
     cardHeightAboveItemCm: false
+    clearCard: false
+    clearColorSec: false
+    clearFillColor: false
+    clearLineColor: false
     debugColliders: false
+    emberOpener: false
     fallbackVerdict: false
+    fixedReasonLine: false
     itemsRoot: false
+    nothingToDoLine: false
     placeAtUserStart: false
+    progress: false
     sfxVolume: false
     userEyeHeightCm: false
     verdictCard: false
+    voice: false
     zoneRing: false
   ScriptTypesHidden:
     {}
@@ -49,10 +60,21 @@
     - verdictCard: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
       zoneRing: !<MappingBased.AssignableType_2> 00000000-0000-0000-0000-000000000000
       itemsRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      emberOpener: !<MappingBased.AssignableType_3> 00000000-0000-0000-0000-000000000000
+      progress: !<MappingBased.AssignableType_4> 00000000-0000-0000-0000-000000000000
+      clearCard: !<MappingBased.AssignableType_5> 00000000-0000-0000-0000-000000000000
+      voice: !<MappingBased.AssignableType_6> 00000000-0000-0000-0000-000000000000
       placeAtUserStart: true
       userEyeHeightCm: !<float> 160.000000
       fallbackVerdict: Not sure. Ask your fire agency
+      nothingToDoLine: Nothing to do.
+      fixedReasonLine: Done. Nothing else to do here.
       cardHeightAboveItemCm: !<float> 30.000000
+      badgeDistanceCm: !<float> 250.000000
+      badgeHysteresisCm: !<float> 5.000000
+      clearLineColor: !<Vec4> {x: 0.500000, y: 1.000000, z: 0.550000, w: 1.000000}
+      clearFillColor: !<Vec4> {x: 0.400000, y: 1.000000, z: 0.500000, w: 0.140000}
+      clearColorSec: !<float> 1.000000
       sfxVolume: 0.800000
       debugColliders: false
   ScriptTypes:
@@ -66,6 +88,10 @@
     - '// @input AssignableType_1 verdictCard {"hint":"The single floating verdict card"}'
     - '// @input AssignableType_2 zoneRing {"hint":"The Zone 0 ring on the ground"}'
     - '// @input SceneObject itemsRoot {"hint":"Parent of the pinchable items. Every child with a FiveFeetItem is wired automatically"}'
+    - '// @input AssignableType_3 emberOpener {"hint":"Ember opener played before the line draws (optional: without it the line draws at start)"}'
+    - "// @input AssignableType_4 progress {\"hint\":\"Progress panel on the wall: 'Zone 0: N of M fixed' (optional)\"}"
+    - '// @input AssignableType_5 clearCard {"hint":"Card at the center of the wall shown when every item is fixed (optional)"}'
+    - '// @input AssignableType_6 voice {"hint":"Reads the verdict and the action out loud when a card shows (optional)"}'
     - '// @ui {"widget":"group_end"}'
     - '// @ui {"widget":"separator"}'
     - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Settings</span>"}'
@@ -73,7 +99,14 @@
     - '// @input bool placeAtUserStart = true {"hint":"At start, move the whole scene so the ground is under the user and the wall is straight ahead"}'
     - '// @input float userEyeHeightCm = 160 {"hint":"User eye height above the ground (cm), used to put the ground under the user at start", "widget":"slider", "min":100, "max":200, "step":1}'
     - '// @input string fallbackVerdict = "Not sure. Ask your fire agency" {"hint":"Verdict shown for an item that has no verdict"}'
+    - '// @input string nothingToDoLine = "Nothing to do." {"hint":"Action line for an item with nothing to do"}'
+    - '// @input string fixedReasonLine = "Done. Nothing else to do here." {"hint":"Reason line on the card of an item that is already fixed"}'
     - "// @input float cardHeightAboveItemCm = 30 {\"hint\":\"Height (cm) of the card's center above the top of the pinched item (brief default 30 cm)\", \"widget\":\"slider\", \"min\":10, \"max\":80, \"step\":1}"
+    - '// @input float badgeDistanceCm = 250 {"hint":"Farther than this along the ground (cm), an item shows only its badge and a pinch does not open the card", "widget":"slider", "min":100, "max":500, "step":5}'
+    - '// @input float badgeHysteresisCm = 5 {"hint":"Band (cm) around the badge distance that stops the badge flickering when the user stands right at it", "widget":"slider", "min":0, "max":30, "step":1}'
+    - '// @input vec4 clearLineColor = "{0.5,1,0.55,1}" {"hint":"Line color once every item is fixed (keep light: the display is additive)", "widget":"color"}'
+    - '// @input vec4 clearFillColor = "{0.4,1,0.5,0.14}" {"hint":"Zone fill color once every item is fixed", "widget":"color"}'
+    - '// @input float clearColorSec = 1 {"hint":"Seconds the line takes to turn from orange to green (brief: 1 s)", "widget":"slider", "min":0.2, "max":5, "step":0.1}'
     - '// @input float sfxVolume = 0.8 {"hint":"Volume of the card and ring sounds", "widget":"slider", "min":0, "max":1, "step":0.05}'
     - "// @input bool debugColliders {\"hint\":\"Draw every item's pinch target box as a wireframe (debug)\"}"
     - '// @ui {"widget":"group_end"}'

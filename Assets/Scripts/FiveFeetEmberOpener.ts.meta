@@ -1,0 +1,85 @@
+- !<AssetImportMetadata/fdb55359-f567-43f3-a8f8-5034e5e39fcb>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> f9c6e5fc-0e75-4472-adc2-3c3c7be2b93c
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> f9c6e5fc-0e75-4472-adc2-3c3c7be2b93c
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 1dc6b7b8-8a16-45bb-95f7-6f6c288a9b32
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/1dc6b7b8-8a16-45bb-95f7-6f6c288a9b32>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: d02323be-76b0-4a25-a5bf-40df6d0d3ccb
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    emberCount: false
+    emberMaterial: false
+    emberMesh: false
+    emberSizeCm: false
+    embersPerCombustible: false
+    embersPerSafeItem: false
+    fallSec: false
+    glowSec: false
+    seed: false
+    spawnWindowSec: false
+    startDelaySec: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - emberMesh: !<reference.RenderMesh> 00000000-0000-0000-0000-000000000000
+      emberMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
+      emberCount: !<float> 20.000000
+      embersPerCombustible: !<float> 3.000000
+      embersPerSafeItem: !<float> 1.000000
+      startDelaySec: 0.200000
+      spawnWindowSec: !<float> 2.000000
+      fallSec: !<float> 1.000000
+      emberSizeCm: 3.500000
+      glowSec: 1.500000
+      seed: !<float> 7.000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">FiveFeetEmberOpener – embers fall, combustibles glow</span>"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">References</span>"}'
+    - '// @ui {"widget":"group_start", "label":"References"}'
+    - '// @input Asset.RenderMesh emberMesh {"hint":"Mesh for one ember (a small sphere)"}'
+    - '// @input Asset.Material emberMaterial {"hint":"Bright orange unlit material for the embers (keep light: the display is additive)"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Settings</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Settings"}'
+    - '// @input float emberCount = 20 {"hint":"How many embers fall (brief: about 20)", "widget":"slider", "min":5, "max":40, "step":1}'
+    - '// @input float embersPerCombustible = 3 {"hint":"Embers that aim at each combustible item. The rest land on the ground or the plant", "widget":"slider", "min":0, "max":6, "step":1}'
+    - '// @input float embersPerSafeItem = 1 {"hint":"Embers that aim at each item that is not combustible (shows that it does not catch)", "widget":"slider", "min":0, "max":3, "step":1}'
+    - '// @input float startDelaySec = 0.2 {"hint":"Seconds before the first ember appears", "widget":"slider", "min":0, "max":2, "step":0.05}'
+    - '// @input float spawnWindowSec = 2 {"hint":"Seconds over which the embers are released", "widget":"slider", "min":0.5, "max":4, "step":0.1}'
+    - '// @input float fallSec = 1 {"hint":"Seconds one ember takes to fall from above the roof to the ground", "widget":"slider", "min":0.3, "max":3, "step":0.1}'
+    - '// @input float emberSizeCm = 5 {"hint":"Ember diameter (cm)", "widget":"slider", "min":1, "max":8, "step":0.5}'
+    - '// @input float glowSec = 1.5 {"hint":"Seconds a combustible item glows after an ember lands on it (brief: about 1.5 s)", "widget":"slider", "min":0.5, "max":4, "step":0.1}'
+    - '// @input float seed = 7 {"hint":"Seed for the landing pattern, so every run looks the same"}'
+    - '// @ui {"widget":"group_end"}'

@@ -28,14 +28,23 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
+    actionColor: false
     autoHideSeconds: false
     cardWidthCm: false
+    doneButtonHeightCm: false
+    doneButtonWidthCm: false
+    doneLabel: false
     footerColor: false
     footerLine: false
+    maxScaleDistanceCm: false
+    minScaleDistanceCm: false
     paddingCm: false
     readingDistanceCm: false
     reasonColor: false
+    referenceDistanceCm: false
     rowGapCm: false
+    scaleWithDistance: false
+    verdictHeightAtReferenceCm: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -53,6 +62,15 @@
       footerLine: State rule. Check your local fire agency.
       reasonColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.950000}
       footerColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.700000}
+      actionColor: !<Vec4> {x: 1.000000, y: 0.900000, z: 0.600000, w: 1.000000}
+      doneButtonWidthCm: !<float> 14.000000
+      doneButtonHeightCm: !<float> 5.000000
+      doneLabel: Done
+      scaleWithDistance: true
+      verdictHeightAtReferenceCm: !<float> 3.000000
+      referenceDistanceCm: !<float> 100.000000
+      minScaleDistanceCm: !<float> 70.000000
+      maxScaleDistanceCm: !<float> 400.000000
   ScriptTypes:
     -
       {}
@@ -69,4 +87,17 @@
     - '// @input string footerLine = "State rule. Check your local fire agency." {"hint":"Footer line shown on every card"}'
     - '// @input vec4 reasonColor = "{1,1,1,0.95}" {"hint":"Reason text color (keep light: the display is additive)", "widget":"color"}'
     - '// @input vec4 footerColor = "{1,1,1,0.7}" {"hint":"Footer text color (keep light: the display is additive)", "widget":"color"}'
+    - '// @input vec4 actionColor = "{1,0.9,0.6,1}" {"hint":"Action line color (keep light: the display is additive)", "widget":"color"}'
+    - '// @input float doneButtonWidthCm = 14 {"hint":"Done button width in cm at scale 1 (brief: at least 8 cm)", "widget":"slider", "min":8, "max":22, "step":0.5}'
+    - '// @input float doneButtonHeightCm = 5 {"hint":"Done button height in cm at scale 1", "widget":"slider", "min":3, "max":8, "step":0.25}'
+    - '// @input string doneLabel = "Done" {"hint":"Label on the Done button"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Distance scaling</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Distance scaling"}'
+    - "// @input bool scaleWithDistance = true {\"hint\":\"Grow the card with the user's distance so the verdict keeps the same apparent size\"}"
+    - '// @input float verdictHeightAtReferenceCm = 3 {"hint":"Verdict text height (cm) when the user is at the reference distance (brief: about 3 cm at 1 m)", "widget":"slider", "min":1, "max":6, "step":0.1}'
+    - '// @input float referenceDistanceCm = 100 {"hint":"Reference distance (cm) for the verdict height above", "widget":"slider", "min":50, "max":200, "step":5}'
+    - '// @input float minScaleDistanceCm = 70 {"hint":"Closer than this (cm) the card stops shrinking", "widget":"slider", "min":30, "max":150, "step":5}'
+    - '// @input float maxScaleDistanceCm = 400 {"hint":"Farther than this (cm) the card stops growing", "widget":"slider", "min":200, "max":800, "step":10}'
     - '// @ui {"widget":"group_end"}'

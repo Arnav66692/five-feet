@@ -1,0 +1,51 @@
+- !<AssetImportMetadata/245119ae-9cc0-4c61-9d99-64b960192127>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> ff9c5bb1-e454-43d2-a496-f7f52470dac3
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> ff9c5bb1-e454-43d2-a496-f7f52470dac3
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> cca93d35-ce13-4aee-8478-2c8e831f3228
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/cca93d35-ce13-4aee-8478-2c8e831f3228>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: 2dc63c33-f74f-4709-bcfe-ee1319c8c329
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    ttsModule: false
+    volume: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - ttsModule: !<reference.TextToSpeechModule> 00000000-0000-0000-0000-000000000000
+      volume: !<float> 1.000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">FiveFeetVoice – reads the card out loud</span>"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @input Asset.TextToSpeechModule ttsModule {"hint":"Text To Speech module asset. Without it (or without TTS support) the Lens logs a warning and stays silent"}'
+    - '// @input float volume = 1 {"hint":"Voice volume", "widget":"slider", "min":0, "max":1, "step":0.05}'

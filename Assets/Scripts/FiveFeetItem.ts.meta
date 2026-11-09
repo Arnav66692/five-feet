@@ -28,8 +28,16 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
+    action: false
+    badge: false
+    badgeLabel: false
+    checkBadge: false
+    combustible: false
     debugCollider: false
     displayName: false
+    fixedColor: false
+    fixedLabel: false
+    glowColor: false
     hitBoxSizeCm: false
     hoverStrength: false
     hoverTint: false
@@ -50,15 +58,23 @@
   DefaultScriptInputs:
     - visualRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       tag: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      badge: !<MappingBased.AssignableType_2> 00000000-0000-0000-0000-000000000000
+      checkBadge: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      fixedLabel: Fixed
+      fixedColor: !<Vec4> {x: 0.550000, y: 1.000000, z: 0.600000, w: 1.000000}
       displayName: Item
       verdict: ""
       reason: ""
       verdictColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+      badgeLabel: ""
+      action: ""
       hitBoxSizeCm: !<Vec3> {x: 40.000000, y: 40.000000, z: 40.000000}
       topOffsetCm: !<float> 20.000000
       hoverTint: !<Vec4> {x: 1.000000, y: 0.900000, z: 0.600000, w: 1.000000}
       hoverStrength: 0.450000
       debugCollider: false
+      combustible: false
+      glowColor: !<Vec4> {x: 1.000000, y: 0.450000, z: 0.100000, w: 1.000000}
   ScriptTypes:
     -
       {}
@@ -68,7 +84,15 @@
     - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">References</span>"}'
     - '// @ui {"widget":"group_start", "label":"References"}'
     - "// @input SceneObject visualRoot {\"hint\":\"Parent of this item's mesh leaves. They are tinted while the item is aimed at\"}"
-    - '// @input AssignableType_1 tag {"hint":"Name tag above this item (optional)"}'
+    - '// @input AssignableType_1 tag {"hint":"Name tag above this item (optional). Shown when the user is near"}'
+    - '// @input AssignableType_2 badge {"hint":"Colored status badge (optional). Shown instead of the tag when the user is far away"}'
+    - '// @input SceneObject checkBadge {"hint":"Green check shown above the item once it is fixed (optional, starts hidden)"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Fixed</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Fixed"}'
+    - '// @input string fixedLabel = "Fixed" {"hint":"Badge status once the item is fixed"}'
+    - '// @input vec4 fixedColor = "{0.55,1,0.6,1}" {"hint":"Badge and card color once fixed (keep light: the display is additive)", "widget":"color"}'
     - '// @ui {"widget":"group_end"}'
     - '// @ui {"widget":"separator"}'
     - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Verdict</span>"}'
@@ -77,6 +101,8 @@
     - "// @input string verdict {\"hint\":\"Verdict shown in large text. Leave empty to show the fallback 'Not sure' verdict\"}"
     - '// @input string reason {"hint":"One short reason shown under the verdict"}'
     - '// @input vec4 verdictColor = "{1,1,1,1}" {"hint":"Color of the verdict text (keep light: the display is additive)", "widget":"color"}'
+    - "// @input string badgeLabel {\"hint\":\"Short status on the far-away badge (for example 'Needs gap'). Empty uses the verdict\"}"
+    - '// @input string action {"hint":"What to do, shown under the reason with a Done button. Empty means nothing to do"}'
     - '// @ui {"widget":"group_end"}'
     - '// @ui {"widget":"separator"}'
     - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Interaction</span>"}'
@@ -86,4 +112,10 @@
     - "// @input vec4 hoverTint = \"{1,0.9,0.6,1}\" {\"hint\":\"Color the item's meshes blend toward while aimed at\", \"widget\":\"color\"}"
     - '// @input float hoverStrength = 0.45 {"hint":"How strongly the hover tint is applied (0 = none, 1 = full tint)", "widget":"slider", "min":0, "max":1, "step":0.05}'
     - '// @input bool debugCollider {"hint":"Draw the pinch target box as a wireframe (debug)"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Embers</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Embers"}'
+    - '// @input bool combustible {"hint":"Catches embers (wood, mulch). Embers that land on it make it glow. A small nonwoody plant does not"}'
+    - "// @input vec4 glowColor = \"{1,0.45,0.1,1}\" {\"hint\":\"Color the item's meshes blend toward while an ember makes it glow\", \"widget\":\"color\"}"
     - '// @ui {"widget":"group_end"}'

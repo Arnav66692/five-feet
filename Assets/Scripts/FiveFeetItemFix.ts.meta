@@ -1,0 +1,66 @@
+- !<AssetImportMetadata/c57dac6f-e9b0-4f73-aa75-bae0640bd15f>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 6b7dc9b6-4e69-4ac8-8ec2-7be0d0639f07
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 6b7dc9b6-4e69-4ac8-8ec2-7be0d0639f07
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> d18bc2da-6a95-4dfe-86ba-8d9674baa274
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/d18bc2da-6a95-4dfe-86ba-8d9674baa274>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: 9f405b25-cf7d-4fb3-96a1-c075fea90b0c
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    durationSec: false
+    houseWall: false
+    item: false
+    metalLengthCm: false
+    mode: false
+    replacementMaterial: false
+    targetWallDistanceCm: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - item: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      houseWall: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      mode: slide
+      targetWallDistanceCm: !<float> 220.000000
+      metalLengthCm: !<float> 100.000000
+      replacementMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
+      durationSec: !<float> 1.000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">FiveFeetItemFix – what Done does to this item</span>"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @input AssignableType_1 item {"hint":"The item this fix changes"}'
+    - '// @input SceneObject houseWall {"hint":"House wall root. Its origin is on the wall face and its +Z points away from the wall"}'
+    - '// @input string mode = "slide" {"hint":"slide: move out from the wall. resurface: recolor to the material. metalNearWall: metal within the length", "widget":"combobox", "values":[{"label":"slide", "value":"slide"}, {"label":"resurface", "value":"resurface"}, {"label":"metalNearWall", "value":"metalNearWall"}]}'
+    - "// @input float targetWallDistanceCm = 220 {\"hint\":\"slide: distance (cm) from the wall face to the item's center after the fix\", \"widget\":\"slider\", \"min\":150, \"max\":400, \"step\":5}"
+    - '// @input float metalLengthCm = 100 {"hint":"metalNearWall: how far (cm) out from the wall the metal goes (brief: the first 1 m)", "widget":"slider", "min":20, "max":200, "step":5}'
+    - '// @input Asset.Material replacementMaterial {"hint":"resurface / metalNearWall: material whose color the changed parts take (gravel or metal)"}'
+    - '// @input float durationSec = 1 {"hint":"Seconds the fix takes", "widget":"slider", "min":0.1, "max":3, "step":0.1}'

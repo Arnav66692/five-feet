@@ -76,7 +76,7 @@
     - NODE_27_DROPLIST_ITEM 0
     - NODE_49_DROPLIST_ITEM 0
     - NODE_69_DROPLIST_ITEM 0
-  BlendMode: Normal
+  BlendMode: Disabled
   Properties:
     Port_Default_N204:
       typeIdx: 1
@@ -89,5 +89,5 @@
       value: 0
     baseColor:
       typeIdx: 5
-      value: {x: 0.620000, y: 0.680000, z: 0.800000, w: 0.350000}
+      value: {x: 0.930000, y: 0.850000, z: 0.700000, w: 1.000000}
   Pass: !<reference> 99dda68f-9bdf-4b66-80ba-0ec77227517d

@@ -1,0 +1,60 @@
+- !<AssetImportMetadata/af98bb43-2ac6-4c9d-9c87-13c816ba0c98>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 3e84c0e9-e83e-47d5-8e15-0a827243bc76
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 3e84c0e9-e83e-47d5-8e15-0a827243bc76
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 93dc110d-a34b-46d4-a235-83d5fe30b3bc
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/93dc110d-a34b-46d4-a235-83d5fe30b3bc>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: 8d55ff7e-3e63-4973-9b15-7ff90234487d
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    doneColor: false
+    pattern: false
+    readingDistanceCm: false
+    textColor: false
+    widthCm: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - pattern: "Zone 0: {fixed} of {total} fixed"
+      readingDistanceCm: !<float> 250.000000
+      widthCm: !<float> 46.000000
+      textColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.950000}
+      doneColor: !<Vec4> {x: 0.550000, y: 1.000000, z: 0.600000, w: 1.000000}
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">FiveFeetProgressUI – Zone 0 progress on the wall</span>"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @input string pattern = "Zone 0: {fixed} of {total} fixed" {"hint":"Text pattern. {fixed} and {total} are replaced"}'
+    - '// @input float readingDistanceCm = 250 {"hint":"Distance (cm) the text is sized for. The user stands about 2.5 m from the wall", "widget":"slider", "min":100, "max":400, "step":5}'
+    - '// @input float widthCm = 46 {"hint":"Panel width (cm)", "widget":"slider", "min":20, "max":80, "step":1}'
+    - '// @input vec4 textColor = "{1,1,1,0.95}" {"hint":"Text color while items still need fixing (keep light: the display is additive)", "widget":"color"}'
+    - '// @input vec4 doneColor = "{0.55,1,0.6,1}" {"hint":"Text color once everything is fixed", "widget":"color"}'
