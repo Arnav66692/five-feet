@@ -21,6 +21,10 @@ import WorldCameraFinderProvider from "SpectaclesInteractionKit.lspkg/Providers/
 
 const DONE_TAP_GUARD_SEC = 0.5
 const TOUCH_SETTLE_SEC = 0.3 // after a release, SIK may still report the press it started on a stale target
+const CLEAR_CARD_GAP_DEG = 0.6 // clear space between the clear card and anything below it, as the user sees it
+const VIEW_MARGIN_DEG = 1.5 // keep the clear card this far inside the edge of the view
+const MIN_FORESHORTEN = 0.3 // never grow the wall panel more than 1/0.3 to make up for a steep view
+const LIFT_SEARCH_STEPS = 24
 const CARD_SFX = requireAsset("../GeneratedSFX/CardShow.wav") as AudioTrackAsset
 const RING_SFX = requireAsset("../GeneratedSFX/RingDraw.wav") as AudioTrackAsset
 
@@ -212,6 +216,146 @@ export class FiveFeetMain extends BaseScriptComponent {
     const eye = WorldCameraFinderProvider.getInstance().getWorldPosition()
     for (const item of this.items) this.refreshFar(item, eye)
     this.layoutBadges(eye)
+    this.layoutWallUi(eye)
+  }
+
+  /**
+   * Smallest text line (cm) that reads at least as tall as a badge's status word at this distance:
+   * a badge's line at scale 1, or badgeAngleDeg once the badge has grown with distance.
+   */
+  private minLineCm(distCm: number): number {
+    const badge = this.items.map((it) => it.badge).find((b) => !!b)
+    const badgeLine = badge ? badge.getLineHeightCm() : 0
+    return Math.max(badgeLine, (distCm * this.badgeAngleDeg * Math.PI) / 180)
+  }
+
+  /** Wall progress panel and clear card: scale with distance like the badges; lift the card clear of the yard. */
+  private layoutWallUi(eye: vec3): void {
+    if (this.progress) {
+      const t = this.progress.getTransform()
+      const rel = t.getWorldPosition().sub(eye)
+      const dir = rel.normalize()
+      // The panel is flat on the wall, so a view from above or below squashes it vertically.
+      const a = Math.abs(dir.dot(t.forward.normalize()))
+      const b = dir.dot(t.up.normalize())
+      const foreshorten = Math.max(MIN_FORESHORTEN, a / Math.max(0.001, Math.sqrt(a * a + b * b)))
+      const need = this.minLineCm(rel.length) / foreshorten
+      this.progress.setViewScale(Math.max(1, need / this.progress.getLineHeightCm()))
+    }
+    if (this.clearCard && this.clearCard.isShowing()) this.layoutClearCard(eye)
+  }
+
+  /**
+   * Scale the clear card so its title reads at least as tall as a badge, then lift it just above
+   * every item, check and badge in view, keeping it fully inside the view.
+   */
+  private layoutClearCard(eye: vec3): void {
+    const card = this.clearCard
+    const cam = WorldCameraFinderProvider.getInstance()
+    const camComp = cam.getComponent()
+    const camT = cam.getTransform()
+    const fwd = camT.forward.uniformScale(-1).normalize()
+    const right = camT.right.normalize()
+    const camUp = camT.up.normalize()
+    const up = this.getTransform().up.normalize()
+    const base = card.getBaseWorldPosition()
+    const scale = Math.max(1, this.minLineCm(base.sub(eye).length) / card.getTitleLineHeightCm())
+    card.setViewScale(scale)
+    const size = card.getSizeCm().uniformScale(scale)
+    const project = (p: vec3): vec2 => {
+      const rel = p.sub(eye)
+      const depth = Math.max(1, rel.dot(fwd))
+      return new vec2(rel.dot(right) / depth, rel.dot(camUp) / depth)
+    }
+    type Box = {x0: number; x1: number; y0: number; y1: number}
+    const cardBox = (lift: number): Box => {
+      const c = base.add(up.uniformScale(lift))
+      const depth = Math.max(1, c.sub(eye).dot(fwd))
+      const p = project(c)
+      const hw = size.x / 2 / depth
+      const hh = size.y / 2 / depth
+      return {x0: p.x - hw, x1: p.x + hw, y0: p.y - hh, y1: p.y + hh}
+    }
+    const obstacles = this.viewObstacles(project)
+    const gap = Math.tan((CLEAR_CARD_GAP_DEG * Math.PI) / 180)
+    const overlaps = (box: Box): Box | undefined =>
+      obstacles.find((o) => box.x0 < o.x1 && box.x1 > o.x0 && box.y0 < o.y1 + gap && box.y1 > o.y0)
+    let lift = 0
+    for (let pass = 0; pass <= obstacles.length; pass++) {
+      const box = cardBox(lift)
+      const hit = overlaps(box)
+      if (!hit) break
+      const depth = Math.max(1, base.add(up.uniformScale(lift)).sub(eye).dot(fwd))
+      lift += (hit.y1 + gap - box.y0) * depth + 0.5
+    }
+    if (camComp) {
+      // Fully inside the view wins over clearing the yard: lower the card until its top fits.
+      const topLimit = Math.tan(camComp.fov / 2 - (VIEW_MARGIN_DEG * Math.PI) / 180)
+      if (cardBox(lift).y1 > topLimit) {
+        let lo = lift - 500
+        let hi = lift
+        for (let i = 0; i < LIFT_SEARCH_STEPS; i++) {
+          const mid = (lo + hi) / 2
+          if (cardBox(mid).y1 > topLimit) hi = mid
+          else lo = mid
+        }
+        lift = lo
+      }
+    }
+    card.setLift(lift)
+  }
+
+  /** View-space boxes (tangent units) of the Zone 0 line and every item's meshes, check and visible badge. */
+  private viewObstacles(project: (p: vec3) => vec2): {x0: number; x1: number; y0: number; y1: number}[] {
+    const boxes: {x0: number; x1: number; y0: number; y1: number}[] = []
+    const addBounds = (min: vec3, max: vec3): void => {
+      let x0 = Infinity
+      let x1 = -Infinity
+      let y0 = Infinity
+      let y1 = -Infinity
+      for (const x of [min.x, max.x])
+        for (const y of [min.y, max.y])
+          for (const z of [min.z, max.z]) {
+            const p = project(new vec3(x, y, z))
+            x0 = Math.min(x0, p.x)
+            x1 = Math.max(x1, p.x)
+            y0 = Math.min(y0, p.y)
+            y1 = Math.max(y1, p.y)
+          }
+      boxes.push({x0, x1, y0, y1})
+    }
+    for (const rmv of this.meshesUnder(this.zoneRing.sceneObject)) {
+      if (rmv.sceneObject.isEnabledInHierarchy) addBounds(rmv.worldAabbMin(), rmv.worldAabbMax())
+    }
+    for (const item of this.items) {
+      const b = item.getVisualWorldBounds()
+      addBounds(b.min, b.max)
+      if (item.checkBadge && item.checkBadge.isEnabledInHierarchy) {
+        for (const rmv of this.meshesUnder(item.checkBadge)) addBounds(rmv.worldAabbMin(), rmv.worldAabbMax())
+      }
+      if (item.badge && item.badge.isVisible()) {
+        const t = item.badge.getTransform()
+        const half = item.badge.getSizeCm().uniformScale(t.getWorldScale().x / 2)
+        const c = t.getWorldPosition()
+        const r = t.right.normalize().uniformScale(half.x)
+        const u = t.up.normalize().uniformScale(half.y)
+        const corners = [c.add(r).add(u), c.add(r).sub(u), c.sub(r).add(u), c.sub(r).sub(u)]
+        const ps = corners.map((p) => project(p))
+        boxes.push({
+          x0: Math.min(...ps.map((p) => p.x)),
+          x1: Math.max(...ps.map((p) => p.x)),
+          y0: Math.min(...ps.map((p) => p.y)),
+          y1: Math.max(...ps.map((p) => p.y))
+        })
+      }
+    }
+    return boxes
+  }
+
+  private meshesUnder(so: SceneObject): RenderMeshVisual[] {
+    const out = (so.getComponents("Component.RenderMeshVisual") as RenderMeshVisual[]).slice()
+    for (let i = 0; i < so.getChildrenCount(); i++) out.push(...this.meshesUnder(so.getChild(i)))
+    return out
   }
 
   /**

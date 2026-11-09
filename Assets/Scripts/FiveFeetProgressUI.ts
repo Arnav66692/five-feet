@@ -2,8 +2,9 @@
  * FiveFeetProgressUI — small progress panel on the house wall (passive view).
  *
  * Owns: a dark BackPlate with one light line "Zone 0: N of M fixed", fixed to the wall face
- *   (no billboarding), sized to read from where the user stands.
- * Public API: setProgress(fixed, total), getText()
+ *   (no billboarding), sized to read from where the user stands at scale 1. FiveFeetMain scales it
+ *   up with distance so the line never reads smaller than a far-away badge.
+ * Public API: setProgress(fixed, total), getText(), setViewScale(s), getLineHeightCm()
  * Must NOT: count anything. FiveFeetMain owns the count.
  *
  * Scene contract: runtime-created children are Panel / Content / ProgressText.
@@ -22,6 +23,7 @@ const FONT_SIZE_SCALE = 1.0
 const SUBHEADLINE = {size: 41, weight: 700}
 const CONTENT_Z = 0.6
 const LINE_HEIGHT_PER_SIZE = 0.036 // measured: size 78.9 text has a 2.24 cm line box, plus a little room
+const MEASURED_LINE_PER_SIZE = 0.0284 // the line box itself: 2.24 cm at size 78.9
 
 @component
 export class FiveFeetProgressUI extends BaseScriptComponent {
@@ -52,6 +54,7 @@ export class FiveFeetProgressUI extends BaseScriptComponent {
   doneColor: vec4 = new vec4(0.55, 1, 0.6, 1)
 
   private progressText!: Text
+  private lineHeightCm = 1
 
   onAwake(): void {
     this.build()
@@ -67,6 +70,16 @@ export class FiveFeetProgressUI extends BaseScriptComponent {
     return this.progressText ? this.progressText.text : ""
   }
 
+  /** Uniform scale of the panel (1 = sized for reading at readingDistanceCm). */
+  setViewScale(s: number): void {
+    this.getTransform().setLocalScale(vec3.one().uniformScale(s))
+  }
+
+  /** Height (cm, at scale 1) of the progress text line. */
+  getLineHeightCm(): number {
+    return this.lineHeightCm
+  }
+
   private build(): void {
     const panel = global.scene.createSceneObject("Panel")
     panel.setParent(this.sceneObject)
@@ -80,6 +93,7 @@ export class FiveFeetProgressUI extends BaseScriptComponent {
 
     const size = SUBHEADLINE.size * FONT_SIZE_SCALE * (this.readingDistanceCm / 110)
     const heightCm = size * LINE_HEIGHT_PER_SIZE
+    this.lineHeightCm = size * MEASURED_LINE_PER_SIZE
     const flex = content.createComponent(FlexLayout.getTypeName()) as FlexLayout
     flex.autoDiscoverItemsOnStart = false // the text row is registered explicitly with addItems below
     flex.width = this.widthCm

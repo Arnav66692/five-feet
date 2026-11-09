@@ -2,8 +2,10 @@
  * FiveFeetClearCardUI — the "Zone 0 clear" card at the center of the wall (passive view).
  *
  * Owns: a dark BackPlate with a large green title and the state-rule footer, billboarding
- *   toward the user, hidden until show().
- * Public API: show(), hide(), isShowing(), getTitle(), getFooter()
+ *   toward the user, hidden until show(). FiveFeetMain scales it with distance and lifts it clear
+ *   of the items in view.
+ * Public API: show(), hide(), isShowing(), getTitle(), getFooter(), setViewScale(s), setLift(cm),
+ *   getBaseWorldPosition(), getTitleLineHeightCm(), getSizeCm()
  * Must NOT: decide when the zone is clear. FiveFeetMain does.
  *
  * Scene contract: runtime-created children are Panel / Content / ClearTitle | ClearFooter.
@@ -24,6 +26,7 @@ const TITLE = {size: 62, weight: 700} // HeadlineXL
 const CAPTION = {size: 38, weight: 500}
 const CONTENT_Z = 0.6
 const LINE_HEIGHT_PER_SIZE = 0.036 // measured: size 78.9 text has a 2.24 cm line box, plus a little room
+const MEASURED_LINE_PER_SIZE = 0.0284 // the line box itself: 2.24 cm at size 78.9
 
 @component
 export class FiveFeetClearCardUI extends BaseScriptComponent {
@@ -62,8 +65,12 @@ export class FiveFeetClearCardUI extends BaseScriptComponent {
   private footerText!: Text
   private showing = false
   private startHideDone = false
+  private baseLocal = vec3.zero()
+  private heightCm = 0
+  private titleLineHeightCm = 1
 
   onAwake(): void {
+    this.baseLocal = this.getTransform().getLocalPosition()
     this.build()
     this.createEvent("UpdateEvent").bind(() => this.onUpdate())
   }
@@ -89,6 +96,32 @@ export class FiveFeetClearCardUI extends BaseScriptComponent {
 
   getFooter(): string {
     return this.footerText ? this.footerText.text : ""
+  }
+
+  /** Uniform scale of the card (1 = sized for reading at readingDistanceCm). */
+  setViewScale(s: number): void {
+    this.getTransform().setLocalScale(vec3.one().uniformScale(s))
+  }
+
+  /** Raise the card this many cm above its authored spot (negative lowers it). */
+  setLift(cm: number): void {
+    this.getTransform().setLocalPosition(this.baseLocal.add(new vec3(0, cm, 0)))
+  }
+
+  /** World position of the authored spot, before any lift. */
+  getBaseWorldPosition(): vec3 {
+    const parent = this.sceneObject.getParent()
+    return parent ? parent.getTransform().getWorldTransform().multiplyPoint(this.baseLocal) : this.baseLocal
+  }
+
+  /** Height (cm, at scale 1) of the title line. */
+  getTitleLineHeightCm(): number {
+    return this.titleLineHeightCm
+  }
+
+  /** Card width and height (cm, at scale 1). */
+  getSizeCm(): vec2 {
+    return new vec2(this.widthCm, this.heightCm)
   }
 
   private onUpdate(): void {
@@ -134,9 +167,12 @@ export class FiveFeetClearCardUI extends BaseScriptComponent {
     flex.paddingRight = 2.5
     flex.onLayoutComplete.add((r) => {
       backPlate.size = new vec2(this.widthCm, r.containerHeight)
+      this.heightCm = r.containerHeight
     })
 
     const k = this.readingDistanceCm / 110
+    this.titleLineHeightCm = TITLE.size * FONT_SIZE_SCALE * k * MEASURED_LINE_PER_SIZE
+    this.heightCm = 4 + 1 + (TITLE.size + 2 * CAPTION.size) * FONT_SIZE_SCALE * k * LINE_HEIGHT_PER_SIZE
     this.titleText = this.addRow(content, "ClearTitle", TITLE.size * k, TITLE.weight, HorizontalOverflow.Shrink)
     this.titleText.text = this.title
     this.titleText.textFill.color = this.titleColor

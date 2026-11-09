@@ -120,6 +120,8 @@ Embers drift down onto the yard. The ones that land inside the 5 ft of the house
   - The mulch bed changes to gray gravel.
   - The first 1 m of fence next to the wall changes to dark gray metal.
   - The item gets a green check badge and its card hides.
+- **Wall text size.** The progress panel and the "Zone 0 clear" card grow with distance like the badges, so they read from the 4.2 m overview.
+- **Card timing.** Cards with a Done button stay up 20 s, so there is time to read the action and press Done. Cards with nothing to do still hide after 8 s.
 - **Progress.** A small panel on the wall, above the items, reads "Zone 0: 0 of 3 fixed" and counts up. When all 3 are fixed, the line animates from orange to green over 1 s, and a card at the center of the wall says "Zone 0 clear" with the footer "State rule. Check your local fire agency."
 - **Voice.** When a card shows, the Lens reads out the verdict and the action with text to speech. If text to speech is not available, it logs a warning and the card still works.
 - **It looks like a real back yard.** The wall gets horizontal lap siding lines, a window, a back door, a roof eave with a gutter along the top, and a light warm color. The ground in front of the wall is dirt and patio inside the zone, with grass from 3 m out. Everything stays at real size and keeps the same positions as v1.
