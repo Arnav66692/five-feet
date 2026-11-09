@@ -8,8 +8,9 @@
  *   (out -> wall), RingFill (faint zone fill, fades in after the draw).
  *   The OUTER edge of RingOuterLine sits exactly outerEdgeDistanceCm from the wall face.
  * Expects @inputs: houseWall (origin on the wall face plane, +Z = wall normal) + the 4 segments.
- * Public API: startDraw(), isDrawComplete(), getMeasuredOuterEdgeDistanceCm(),
- *   getOuterLineSpanCm(), outerEdgeDistanceCm (input), onDrawComplete.
+ * Public API: startDraw(), isDrawComplete(), getDrawCompleteTime(), getMeasuredOuterEdgeDistanceCm(),
+ *   getOuterLineSpanCm(), animateColors(line, fill, seconds), getLineColor(),
+ *   outerEdgeDistanceCm (input), onDrawComplete.
  * Must NOT: handle items or the verdict card.
  */
 import Event, {PublicApi} from "SpectaclesInteractionKit.lspkg/Utils/Event"
@@ -98,6 +99,15 @@ export class FiveFeetZoneRing extends BaseScriptComponent {
   private drawing = false
   private complete = false
   private fillMaterial: Material | null = null
+  private drawCompleteTime = -1
+  private lineMaterial: Material | null = null
+  private colorFromLine = vec4.one()
+  private colorToLine = vec4.one()
+  private colorFromFill = vec4.one()
+  private colorToFill = vec4.one()
+  private colorElapsed = 0
+  private colorDuration = 0
+  private colorAnimating = false
 
   onAwake(): void {
     if (!this.houseWall || !this.outerLine || !this.sideLeft || !this.sideRight || !this.fill) {
@@ -123,6 +133,30 @@ export class FiveFeetZoneRing extends BaseScriptComponent {
     return this.complete
   }
 
+  /**
+   * Blend the line and the zone fill to new colors over `seconds` (for example orange to green
+   * once the zone is clear).
+   */
+  animateColors(line: vec4, fill: vec4, seconds: number): void {
+    this.colorFromLine = this.getLineColor()
+    this.colorToLine = line
+    this.colorFromFill = this.fillColor
+    this.colorToFill = fill
+    this.colorElapsed = 0
+    this.colorDuration = Math.max(0.01, seconds)
+    this.colorAnimating = true
+  }
+
+  /** Current line color, read from the line material. */
+  getLineColor(): vec4 {
+    return this.lineMaterial ? this.lineMaterial.mainPass.baseColor : this.lineColor
+  }
+
+  /** Lens time (getTime()) when the draw finished, or -1 before that. */
+  getDrawCompleteTime(): number {
+    return this.drawCompleteTime
+  }
+
   /** Current drawn length of the outer line along the wall (cm). */
   getOuterLineSpanCm(): number {
     if (!this.outerLine.enabled) return 0
@@ -143,15 +177,19 @@ export class FiveFeetZoneRing extends BaseScriptComponent {
   }
 
   private onUpdate(): void {
+    if (this.colorAnimating) this.stepColors()
     if (!this.drawing) return
     this.elapsed += getDeltaTime()
     const p = Math.min(1, this.elapsed / Math.max(0.01, this.drawDurationSec))
     this.applyProgress(this.easeInOut(p))
     if (p >= 1 && !this.complete) {
       this.complete = true
+      this.drawCompleteTime = getTime()
       const measured = this.getMeasuredOuterEdgeDistanceCm()
       print(
-        "[FiveFeet] Zone0Ring drawn: outer edge " +
+        "[FiveFeet] Zone0Ring drawn at t=" +
+          this.drawCompleteTime.toFixed(2) +
+          "s: outer edge " +
           measured.toFixed(1) +
           " cm from wall face, span " +
           this.getOuterLineSpanCm().toFixed(1) +
@@ -165,6 +203,15 @@ export class FiveFeetZoneRing extends BaseScriptComponent {
       this.setFillAlpha(a)
       if (a >= 1) this.drawing = false
     }
+  }
+
+  private stepColors(): void {
+    this.colorElapsed += getDeltaTime()
+    const p = Math.min(1, this.colorElapsed / this.colorDuration)
+    if (this.lineMaterial) this.lineMaterial.mainPass.baseColor = vec4.lerp(this.colorFromLine, this.colorToLine, p)
+    this.fillColor = vec4.lerp(this.colorFromFill, this.colorToFill, p)
+    if (this.fill.enabled) this.setFillAlpha(1)
+    if (p >= 1) this.colorAnimating = false
   }
 
   private easeInOut(t: number): number {
@@ -213,9 +260,14 @@ export class FiveFeetZoneRing extends BaseScriptComponent {
   }
 
   private applyColors(): void {
+    // One clone shared by the three line segments, so a color change recolors the whole line
+    // without touching the material asset.
     for (const so of [this.outerLine, this.sideLeft, this.sideRight]) {
       const rmv = so.getComponent("Component.RenderMeshVisual") as RenderMeshVisual
-      if (rmv && rmv.mainMaterial) rmv.mainMaterial.mainPass.baseColor = this.lineColor
+      if (!rmv || !rmv.mainMaterial) continue
+      if (!this.lineMaterial) this.lineMaterial = rmv.mainMaterial.clone()
+      rmv.mainMaterial = this.lineMaterial
+      this.lineMaterial.mainPass.baseColor = this.lineColor
     }
     const fillRmv = this.fill.getComponent("Component.RenderMeshVisual") as RenderMeshVisual
     if (fillRmv && fillRmv.mainMaterial) {

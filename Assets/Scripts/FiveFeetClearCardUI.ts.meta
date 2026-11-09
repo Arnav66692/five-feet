@@ -1,0 +1,63 @@
+- !<AssetImportMetadata/8612c763-e271-4d86-a5ca-8f0c334db1f3>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 58389feb-7335-4d24-953f-7022502a8e3b
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 58389feb-7335-4d24-953f-7022502a8e3b
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 4d2d8db6-8dfd-4b6f-af4c-9c51a7d88a38
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/4d2d8db6-8dfd-4b6f-af4c-9c51a7d88a38>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: cae7553c-b633-491e-9682-e1e0d2ae6c0e
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    footerColor: false
+    footerLine: false
+    readingDistanceCm: false
+    title: false
+    titleColor: false
+    widthCm: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - title: Zone 0 clear
+      footerLine: State rule. Check your local fire agency.
+      readingDistanceCm: !<float> 250.000000
+      widthCm: !<float> 60.000000
+      titleColor: !<Vec4> {x: 0.550000, y: 1.000000, z: 0.600000, w: 1.000000}
+      footerColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.750000}
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">FiveFeetClearCardUI – Zone 0 clear card</span>"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @input string title = "Zone 0 clear" {"hint":"Title shown when every item is fixed"}'
+    - '// @input string footerLine = "State rule. Check your local fire agency." {"hint":"Footer line under the title"}'
+    - '// @input float readingDistanceCm = 250 {"hint":"Distance (cm) the text is sized for. The user stands about 2.5 m from the wall", "widget":"slider", "min":100, "max":400, "step":5}'
+    - '// @input float widthCm = 60 {"hint":"Card width (cm)", "widget":"slider", "min":30, "max":100, "step":1}'
+    - '// @input vec4 titleColor = "{0.55,1,0.6,1}" {"hint":"Title color (keep light: the display is additive)", "widget":"color"}'
+    - '// @input vec4 footerColor = "{1,1,1,0.75}" {"hint":"Footer color (keep light: the display is additive)", "widget":"color"}'

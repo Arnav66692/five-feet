@@ -28,14 +28,24 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
+    actionCardHideSeconds: false
+    actionColor: false
     autoHideSeconds: false
+    cardDistanceCm: false
     cardWidthCm: false
+    doneButtonHeightCm: false
+    doneButtonWidthCm: false
+    doneColor: false
+    doneLabel: false
+    doneTextColor: false
     footerColor: false
     footerLine: false
+    gapAboveItemDeg: false
     paddingCm: false
     readingDistanceCm: false
     reasonColor: false
     rowGapCm: false
+    verdictAngleDeg: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -50,9 +60,19 @@
       rowGapCm: 0.600000
       readingDistanceCm: !<float> 140.000000
       autoHideSeconds: !<float> 8.000000
+      actionCardHideSeconds: !<float> 20.000000
       footerLine: State rule. Check your local fire agency.
       reasonColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.950000}
       footerColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.700000}
+      actionColor: !<Vec4> {x: 1.000000, y: 0.900000, z: 0.600000, w: 1.000000}
+      doneButtonWidthCm: !<float> 14.000000
+      doneButtonHeightCm: !<float> 5.000000
+      doneLabel: Done
+      doneColor: !<Vec4> {x: 0.550000, y: 0.950000, z: 0.600000, w: 1.000000}
+      doneTextColor: !<Vec4> {x: 0.050000, y: 0.160000, z: 0.080000, w: 1.000000}
+      cardDistanceCm: !<float> 90.000000
+      verdictAngleDeg: 1.300000
+      gapAboveItemDeg: 0.800000
   ScriptTypes:
     -
       {}
@@ -61,12 +81,30 @@
     - '// @ui {"widget":"separator"}'
     - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Settings</span>"}'
     - '// @ui {"widget":"group_start", "label":"Settings"}'
-    - '// @input float cardWidthCm = 25 {"hint":"Card width in cm (brief default 25 cm)", "widget":"slider", "min":15, "max":40, "step":0.5}'
-    - '// @input float paddingCm = 1.5 {"hint":"Inner padding of the card in cm", "widget":"slider", "min":0.5, "max":4, "step":0.1}'
-    - '// @input float rowGapCm = 0.6 {"hint":"Gap between the verdict, reason and footer rows in cm", "widget":"slider", "min":0, "max":3, "step":0.1}'
-    - '// @input float readingDistanceCm = 140 {"hint":"Distance (cm) the text is sized for. The card is read from about 1.2 to 1.7 m away", "widget":"slider", "min":80, "max":250, "step":5}'
-    - '// @input float autoHideSeconds = 8 {"hint":"Seconds before the card hides itself after it is shown (brief default 8 s)", "widget":"slider", "min":2, "max":30, "step":0.5}'
+    - '// @input float cardWidthCm = 28 {"hint":"Card width in cm at scale 1", "widget":"slider", "min":15, "max":40, "step":0.5}'
+    - '// @input float paddingCm = 1 {"hint":"Inner padding of the card in cm", "widget":"slider", "min":0.5, "max":4, "step":0.1}'
+    - '// @input float rowGapCm = 0.35 {"hint":"Gap between the rows in cm", "widget":"slider", "min":0, "max":3, "step":0.05}'
+    - '// @input float readingDistanceCm = 140 {"hint":"Distance (cm) the text sizes are designed for (the card is then scaled for its real distance)", "widget":"slider", "min":80, "max":250, "step":5}'
+    - '// @input float autoHideSeconds = 8 {"hint":"Seconds before a card with nothing to do hides itself (brief default 8 s)", "widget":"slider", "min":2, "max":30, "step":0.5}'
+    - '// @input float actionCardHideSeconds = 20 {"hint":"Seconds before a card with a Done button hides itself, so there is time to act and press Done", "widget":"slider", "min":2, "max":60, "step":0.5}'
     - '// @input string footerLine = "State rule. Check your local fire agency." {"hint":"Footer line shown on every card"}'
     - '// @input vec4 reasonColor = "{1,1,1,0.95}" {"hint":"Reason text color (keep light: the display is additive)", "widget":"color"}'
     - '// @input vec4 footerColor = "{1,1,1,0.7}" {"hint":"Footer text color (keep light: the display is additive)", "widget":"color"}'
+    - '// @input vec4 actionColor = "{1,0.9,0.6,1}" {"hint":"Action line color (keep light: the display is additive)", "widget":"color"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Done button</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Done button"}'
+    - '// @input float doneButtonWidthCm = 15 {"hint":"Done button width in cm at scale 1 (about 13.7 cm at 0.9 m with the default text size)", "widget":"slider", "min":8, "max":22, "step":0.5}'
+    - '// @input float doneButtonHeightCm = 4 {"hint":"Done button height in cm at scale 1", "widget":"slider", "min":3, "max":8, "step":0.25}'
+    - '// @input string doneLabel = "Done" {"hint":"Label on the Done button"}'
+    - '// @input vec4 doneColor = "{0.55,0.95,0.6,1}" {"hint":"Done button fill (light green)", "widget":"color"}'
+    - '// @input vec4 doneTextColor = "{0.05,0.16,0.08,1}" {"hint":"Done label color (dark, on the light green fill)", "widget":"color"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Placement</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Placement"}'
+    - '// @input float cardDistanceCm = 90 {"hint":"Distance (cm) from the eye to the card, along the line to the item (closer if the item is nearer)", "widget":"slider", "min":40, "max":200, "step":5}'
+    - '// @input float verdictAngleDeg = 1.3 {"hint":"Angular height (degrees) of the verdict text. Kept the same at every distance", "widget":"slider", "min":0.8, "max":3, "step":0.05}'
+    - "// @input float gapAboveItemDeg = 0.8 {\"hint\":\"Gap (degrees) between the item's top and the card's bottom edge, as the user sees it\", \"widget\":\"slider\", \"min\":0, \"max\":5, \"step\":0.1}"
     - '// @ui {"widget":"group_end"}'

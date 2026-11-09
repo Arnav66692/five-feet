@@ -1,0 +1,60 @@
+- !<AssetImportMetadata/c85f5754-2b46-40bc-83a4-34a62e46f15c>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> fb19f004-dc02-4a8d-9094-dbf89d350c97
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> fb19f004-dc02-4a8d-9094-dbf89d350c97
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 36196261-9df5-440d-9f7d-f647c7b7752e
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/36196261-9df5-440d-9f7d-f647c7b7752e>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: 43b30d66-c6cc-41ad-a6e8-2dfbdff09afa
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    maxChars: false
+    readingDistanceCm: false
+    status: false
+    statusColor: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - status: Status
+      statusColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+      readingDistanceCm: !<float> 300.000000
+      maxChars: !<float> 9.000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">FiveFeetItemBadgeUI – far-away status badge</span>"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Settings</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Settings"}'
+    - "// @input string status = \"Status\" {\"hint\":\"Status shown until the item changes it (for example 'Move now')\"}"
+    - '// @input vec4 statusColor = "{1,1,1,1}" {"hint":"Status text color (keep light: the display is additive)", "widget":"color"}'
+    - '// @input float readingDistanceCm = 300 {"hint":"Distance (cm) the text is sized for. Badges show from farther than 2.5 m", "widget":"slider", "min":150, "max":500, "step":5}'
+    - '// @input float maxChars = 9 {"hint":"Longest status the badge must fit, in characters", "widget":"slider", "min":4, "max":16, "step":1}'
+    - '// @ui {"widget":"group_end"}'

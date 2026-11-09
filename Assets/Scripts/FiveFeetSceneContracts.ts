@@ -22,7 +22,18 @@ export const FIVE_FEET_NAMES = {
   cardPanel: "CardPanel",
   verdictText: "VerdictText",
   reasonText: "ReasonText",
-  footerText: "FooterText"
+  footerText: "FooterText",
+  // v2
+  emberOpener: "EmberOpener",
+  actionText: "ActionText",
+  doneButton: "DoneButton",
+  badgePrefix: "Badge_",
+  checkPrefix: "Check_",
+  fixPrefix: "Fix_",
+  progressPanel: "ProgressPanel",
+  clearCard: "ClearCard",
+  voice: "Voice",
+  yardGround: "YardGround"
 }
 
 /** Zone 0 is the first 5 ft (152 cm) from the house wall. Tolerance from the brief: plus or minus 5 cm. */

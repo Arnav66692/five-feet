@@ -61,7 +61,7 @@
     - Port_WorldTangent_N004:
         typeIdx: 4
         value: {x: 0.000000, y: 0.000000, z: 1.000000}
-  DepthWrite: false
+  DepthWrite: true
   DepthTest: true
   DepthFunction: LessEqual
   TwoSided: false
@@ -76,7 +76,7 @@
     - NODE_27_DROPLIST_ITEM 0
     - NODE_49_DROPLIST_ITEM 0
     - NODE_69_DROPLIST_ITEM 0
-  BlendMode: Normal
+  BlendMode: Disabled
   Properties:
     Port_Default_N204:
       typeIdx: 1
@@ -89,5 +89,5 @@
       value: 0
     baseColor:
       typeIdx: 5
-      value: {x: 0.450000, y: 0.550000, z: 0.450000, w: 0.250000}
+      value: {x: 0.580000, y: 0.440000, z: 0.310000, w: 1.000000}
   Pass: !<reference> 99dda68f-9bdf-4b66-80ba-0ec77227517d
