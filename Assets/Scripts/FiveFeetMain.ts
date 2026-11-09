@@ -19,6 +19,8 @@ import {FiveFeetClearCardUI} from "./FiveFeetClearCardUI"
 import {FiveFeetVoice} from "./FiveFeetVoice"
 import WorldCameraFinderProvider from "SpectaclesInteractionKit.lspkg/Providers/CameraProvider/WorldCameraFinderProvider"
 
+const DONE_TAP_GUARD_SEC = 0.5
+const TOUCH_SETTLE_SEC = 0.3 // after a release, SIK may still report the press it started on a stale target
 const CARD_SFX = requireAsset("../GeneratedSFX/CardShow.wav") as AudioTrackAsset
 const RING_SFX = requireAsset("../GeneratedSFX/RingDraw.wav") as AudioTrackAsset
 
@@ -86,9 +88,9 @@ export class FiveFeetMain extends BaseScriptComponent {
   fixedReasonLine: string = "Done. Nothing else to do here."
 
   @input
-  @hint("Height (cm) of the card's center above the top of the pinched item (brief default 30 cm)")
-  @widget(new SliderWidget(10, 80, 1))
-  cardHeightAboveItemCm: number = 30
+  @hint("Angular height (degrees) of a far-away badge's status line, kept the same at any distance")
+  @widget(new SliderWidget(0.4, 3, 0.05))
+  badgeAngleDeg: number = 1.1
 
   @input
   @hint("Farther than this along the ground (cm), an item shows only its badge and a pinch does not open the card")
@@ -131,6 +133,9 @@ export class FiveFeetMain extends BaseScriptComponent {
   private toFixTotal = 0
   private fixedCount = 0
   private zoneClear = false
+  private lastDoneTime = -10
+  private touchActive = false
+  private lastTouchEndTime = -10
   private cardAudio: AudioComponent
   private ringAudio: AudioComponent
   private lastVerdict = ""
@@ -144,6 +149,12 @@ export class FiveFeetMain extends BaseScriptComponent {
     this.ringAudio = this.makeAudio("RingAudio", RING_SFX, false)
     this.createEvent("OnStartEvent").bind(() => this.onStart())
     this.createEvent("UpdateEvent").bind(() => this.updateItemDistances())
+    this.createEvent("TouchStartEvent").bind(() => (this.touchActive = true))
+    this.createEvent("TouchEndEvent").bind((e) => {
+      this.touchActive = false
+      this.lastTouchEndTime = getTime()
+      this.resolveTap(e.getTouchPosition())
+    })
   }
 
   /** All wired items (for tests and logs). */
@@ -159,7 +170,10 @@ export class FiveFeetMain extends BaseScriptComponent {
   private onStart(): void {
     if (this.placeAtUserStart) this.placeRigAtUser()
     this.wireItems()
-    this.verdictCard.onDone.add(() => this.onDonePressed())
+    this.verdictCard.onDone.add(() => this.onDonePressed(false))
+    this.verdictCard.onHidden.add(() => {
+      if (this.currentItem) this.currentItem.setTagSuppressed(false)
+    })
     if (this.emberOpener) {
       this.emberOpener.onComplete.add(() => this.startRingDraw())
       this.emberOpener.play(this.items)
@@ -197,6 +211,45 @@ export class FiveFeetMain extends BaseScriptComponent {
     if (this.items.length === 0) return
     const eye = WorldCameraFinderProvider.getInstance().getWorldPosition()
     for (const item of this.items) this.refreshFar(item, eye)
+    this.layoutBadges(eye)
+  }
+
+  /**
+   * Far-away badges: scale each so its status line subtends badgeAngleDeg (readable from 4.5 m),
+   * then lift any badge that would overlap one placed before it, as the user sees them.
+   */
+  private layoutBadges(eye: vec3): void {
+    const camT = WorldCameraFinderProvider.getInstance().getTransform()
+    const fwd = camT.forward.uniformScale(-1).normalize()
+    const right = camT.right.normalize()
+    const up = camT.up.normalize()
+    const angle = (this.badgeAngleDeg * Math.PI) / 180
+    type Box = {x: number; y: number; hw: number; hh: number}
+    const placed: Box[] = []
+    const badges = this.items
+      .filter((it) => it.isFar() && it.badge)
+      .map((it) => it.badge)
+      .sort((a, b) => a.getBaseWorldPosition().y - b.getBaseWorldPosition().y)
+    for (const badge of badges) {
+      const base = badge.getBaseWorldPosition()
+      const dist = Math.max(1, base.sub(eye).length)
+      const scale = Math.max(1, (dist * angle) / badge.getLineHeightCm())
+      badge.setViewScale(scale)
+      const size = badge.getSizeCm().uniformScale(scale)
+      let lift = 0
+      for (let pass = 0; pass < placed.length + 1; pass++) {
+        const rel = base.add(vec3.up().uniformScale(lift)).sub(eye)
+        const depth = Math.max(1, rel.dot(fwd))
+        const box = {x: rel.dot(right) / depth, y: rel.dot(up) / depth, hw: size.x / 2 / depth, hh: size.y / 2 / depth}
+        const hit = placed.find((p) => Math.abs(p.x - box.x) < p.hw + box.hw && Math.abs(p.y - box.y) < p.hh + box.hh)
+        if (!hit) {
+          placed.push(box)
+          break
+        }
+        lift += (hit.y + hit.hh + box.hh - box.y) * depth + 0.5
+      }
+      badge.setLift(lift)
+    }
   }
 
   /** Update one item's far state from the user's eye position. Returns its ground distance (cm). */
@@ -207,7 +260,47 @@ export class FiveFeetMain extends BaseScriptComponent {
     return d
   }
 
-  private onItemPinched(item: FiveFeetItem): void {
+  /**
+   * Mouse and touch taps in the preview. SIK's mouse interactor keeps its target locked to what was
+   * under the cursor before the press, so a tap on a new spot triggers the old target (and Done only
+   * gets hovered after the release). Taps are resolved here instead: on release, a ray from the
+   * camera through the tap picks Done, the card, or the nearest item's pinch box. SIK pinches and
+   * Done presses that arrive during a touch are ignored. Hands and LEAF never send touches, so they
+   * go through SIK as before.
+   */
+  private resolveTap(screenPos: vec2): void {
+    const camProvider = WorldCameraFinderProvider.getInstance()
+    const cam = camProvider.getComponent()
+    if (!cam || this.items.length === 0) return
+    const origin = camProvider.getWorldPosition()
+    const dir = cam.screenSpaceToWorldSpace(screenPos, 100).sub(origin).normalize()
+    if (this.verdictCard.doneRayHit(origin, dir)) {
+      print("[FiveFeet] tap on Done")
+      this.onDonePressed(true)
+      return
+    }
+    if (this.verdictCard.panelRayHit(origin, dir)) return // the card blocks what is behind it
+    let best: FiveFeetItem | null = null
+    let bestDist = Infinity
+    for (const item of this.items) {
+      const d = item.rayHitDistance(origin, dir)
+      if (d >= 0 && d < bestDist) {
+        best = item
+        bestDist = d
+      }
+    }
+    if (best) this.onItemPinched(best, true)
+  }
+
+  /** True during a mouse or touch press and just after it, while SIK may still report a stale target. */
+  private isTouchInput(): boolean {
+    return this.touchActive || getTime() - this.lastTouchEndTime < TOUCH_SETTLE_SEC
+  }
+
+  private onItemPinched(item: FiveFeetItem, fromTap: boolean = false): void {
+    if (!fromTap && this.isTouchInput()) return // a mouse or touch press: resolved on release instead
+    // The same tap that pressed Done must not also pinch the item behind the card.
+    if (getTime() - this.lastDoneTime < DONE_TAP_GUARD_SEC) return
     const distance = this.refreshFar(item, WorldCameraFinderProvider.getInstance().getWorldPosition())
     if (item.isFar()) {
       print(
@@ -226,8 +319,10 @@ export class FiveFeetMain extends BaseScriptComponent {
       color = item.fixedColor
       action = ""
     }
-    const pos = item.getTopWorldPosition().add(vec3.up().uniformScale(this.cardHeightAboveItemCm))
-    this.verdictCard.showVerdict(verdict, reason, color, pos, action, item.needsAction())
+    if (this.currentItem && this.currentItem !== item) this.currentItem.setTagSuppressed(false)
+    item.setTagSuppressed(true) // the open card names the item; its tag would sit under the card
+    const bounds = item.getVisualWorldBounds()
+    this.verdictCard.showVerdict(verdict, reason, color, bounds.min, bounds.max, action, item.needsAction())
     if (this.voice) this.voice.speak(action.length > 0 ? verdict + ". " + action : verdict + ".")
     this.currentItem = item
     this.lastVerdict = verdict
@@ -236,9 +331,11 @@ export class FiveFeetMain extends BaseScriptComponent {
   }
 
   /** Done on the card: run the shown item's fix, then mark it fixed. */
-  private onDonePressed(): void {
+  private onDonePressed(fromTap: boolean): void {
+    if (!fromTap && this.isTouchInput()) return // a mouse or touch press: resolved on release instead
     const item = this.currentItem
     if (!item || !item.needsAction()) return
+    this.lastDoneTime = getTime()
     this.verdictCard.hide()
     print("[FiveFeet] Done pressed for " + item.sceneObject.name)
     const fix = this.fixes.get(item)

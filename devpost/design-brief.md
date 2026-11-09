@@ -128,7 +128,8 @@ Embers drift down onto the yard. The ones that land inside the 5 ft of the house
 7. Within 6 s of start, at least 15 embers have spawned and the line has finished drawing.
 8. At least one combustible item glows during the ember opener, and the plant never glows.
 9. With the camera 3 m from an item, the item shows its badge and no full card is showing. With the camera 1.5 m away, pinching it shows the full card.
-10. The full card's world scale at 3 m is 2 to 2.4 times its scale at 1.5 m (text keeps the same apparent size).
+10. At 1.5 m and at 3 m from the item, the whole card is inside the camera view and the verdict text's angular height is the same within 10%.
+    Changed Nov 9 after a click-through showed the scaled card running off the top of the view.
 11. Each non-OK card shows its action line from the table above, and the plant card shows "Nothing to do."
 12. Pinching Done on the firewood moves it so its center is more than 1.8 m from the wall, and its check badge shows.
 13. After Done on firewood, mulch and fence, the progress panel reads "Zone 0: 3 of 3 fixed", the line material is green, and the "Zone 0 clear" card shows.

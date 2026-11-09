@@ -2611,7 +2611,7 @@
     fallbackVerdict: true
     nothingToDoLine: true
     fixedReasonLine: true
-    cardHeightAboveItemCm: true
+    badgeAngleDeg: true
     badgeDistanceCm: true
     badgeHysteresisCm: true
     clearLineColor: true
@@ -2635,7 +2635,7 @@
       fallbackVerdict: Not sure. Ask your fire agency
       nothingToDoLine: Nothing to do.
       fixedReasonLine: Done. Nothing else to do here.
-      cardHeightAboveItemCm: !<float> 30.000000
+      badgeAngleDeg: 1.100000
       badgeDistanceCm: !<float> 250.000000
       badgeHysteresisCm: !<float> 5.000000
       clearLineColor: !<Vec4> {x: 0.500000, y: 1.000000, z: 0.550000, w: 1.000000}
@@ -4970,44 +4970,41 @@
   Enabled: true
   ScriptAsset: !<reference> 2811f978-0f37-4ccd-bfed-a02aefdf0d68
   ScriptInputsDefault:
-    cardWidthCm: true
-    paddingCm: true
-    rowGapCm: true
     readingDistanceCm: true
     autoHideSeconds: true
+    actionCardHideSeconds: true
     footerLine: true
     reasonColor: true
     footerColor: true
     actionColor: true
-    doneButtonWidthCm: true
-    doneButtonHeightCm: true
     doneLabel: true
-    scaleWithDistance: true
-    verdictHeightAtReferenceCm: true
-    referenceDistanceCm: true
-    minScaleDistanceCm: true
-    maxScaleDistanceCm: true
+    doneColor: true
+    doneTextColor: true
+    cardDistanceCm: true
+    verdictAngleDeg: true
+    gapAboveItemDeg: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
-      cardWidthCm: !<float> 25.000000
-      paddingCm: 1.500000
-      rowGapCm: 0.600000
+      cardWidthCm: !<float> 28.000000
+      paddingCm: !<float> 1.000000
+      rowGapCm: 0.350000
       readingDistanceCm: !<float> 140.000000
       autoHideSeconds: !<float> 8.000000
+      actionCardHideSeconds: !<float> 20.000000
       footerLine: State rule. Check your local fire agency.
       reasonColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.950000}
       footerColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.700000}
       actionColor: !<Vec4> {x: 1.000000, y: 0.900000, z: 0.600000, w: 1.000000}
-      doneButtonWidthCm: !<float> 14.000000
-      doneButtonHeightCm: !<float> 5.000000
+      doneButtonWidthCm: !<float> 15.000000
+      doneButtonHeightCm: !<float> 4.000000
       doneLabel: Done
-      scaleWithDistance: true
-      verdictHeightAtReferenceCm: !<float> 3.000000
-      referenceDistanceCm: !<float> 100.000000
-      minScaleDistanceCm: !<float> 70.000000
-      maxScaleDistanceCm: !<float> 400.000000
+      doneColor: !<Vec4> {x: 0.550000, y: 0.950000, z: 0.600000, w: 1.000000}
+      doneTextColor: !<Vec4> {x: 0.050000, y: 0.160000, z: 0.080000, w: 1.000000}
+      cardDistanceCm: !<float> 90.000000
+      verdictAngleDeg: 1.300000
+      gapAboveItemDeg: 0.800000
   ScriptTypes:
     "":
       {}

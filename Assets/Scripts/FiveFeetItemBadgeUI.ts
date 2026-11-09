@@ -2,8 +2,10 @@
  * FiveFeetItemBadgeUI — small colored status badge above one item, read from far away (passive view).
  *
  * Owns: a dark BackPlate with one short colored status ("Move now", "Needs gap", "Fixed"),
- *   sized to read from about 3 m, yaw-billboarding toward the user, and its own visibility.
- * Public API: setStatus(text, color), setVisible(on), isVisible(), getStatus()
+ *   sized to read from about 3 m at scale 1, yaw-billboarding toward the user, and its own
+ *   visibility. FiveFeetMain scales it with distance and lifts it clear of other badges.
+ * Public API: setStatus(text, color), setVisible(on), isVisible(), getStatus(),
+ *   setViewScale(s), setLift(cm), getBaseWorldPosition(), getLineHeightCm(), getSizeCm()
  * Must NOT: decide when it shows or what it says. FiveFeetItem drives it from distance and fix state.
  *
  * Scene contract: runtime-created children are Panel / Content / BadgeText.
@@ -25,6 +27,7 @@ const CONTENT_Z = 0.6
 const CHAR_WIDTH_FACTOR = 0.016 // cm of width per character per unit of text size (bold)
 const MIN_WIDTH_CHARS = 6 // keep short labels like "OK" from making a tiny badge
 const LINE_HEIGHT_PER_SIZE = 0.036 // measured: size 78.9 text has a 2.24 cm line box, plus a little room
+const MEASURED_LINE_PER_SIZE = 0.0284 // the line box itself: 2.24 cm at size 78.9
 
 @component
 export class FiveFeetItemBadgeUI extends BaseScriptComponent {
@@ -56,8 +59,13 @@ export class FiveFeetItemBadgeUI extends BaseScriptComponent {
   private panel!: SceneObject
   private visible = false
   private startHideDone = false
+  private baseLocal = vec3.zero()
+  private widthCm = 0
+  private heightCm = 0
+  private lineHeightCm = 1
 
   onAwake(): void {
+    this.baseLocal = this.getTransform().getLocalPosition()
     this.build()
     this.createEvent("UpdateEvent").bind(() => this.onUpdate())
   }
@@ -81,6 +89,32 @@ export class FiveFeetItemBadgeUI extends BaseScriptComponent {
 
   getStatus(): string {
     return this.badgeText ? this.badgeText.text : this.status
+  }
+
+  /** Uniform scale of the badge (1 = sized for reading at readingDistanceCm). */
+  setViewScale(s: number): void {
+    this.getTransform().setLocalScale(vec3.one().uniformScale(s))
+  }
+
+  /** Raise the badge this many cm above its authored spot (to clear other badges). */
+  setLift(cm: number): void {
+    this.getTransform().setLocalPosition(this.baseLocal.add(new vec3(0, cm, 0)))
+  }
+
+  /** World position of the authored spot, before any lift. */
+  getBaseWorldPosition(): vec3 {
+    const parent = this.sceneObject.getParent()
+    return parent ? parent.getTransform().getWorldTransform().multiplyPoint(this.baseLocal) : this.baseLocal
+  }
+
+  /** Height (cm, at scale 1) of the status text line. */
+  getLineHeightCm(): number {
+    return this.lineHeightCm
+  }
+
+  /** Badge panel width and height (cm, at scale 1). */
+  getSizeCm(): vec2 {
+    return new vec2(this.widthCm, this.heightCm)
   }
 
   private onUpdate(): void {
@@ -131,7 +165,11 @@ export class FiveFeetItemBadgeUI extends BaseScriptComponent {
     flex.paddingRight = 1.5
     flex.onLayoutComplete.add((r) => {
       backPlate.size = new vec2(widthCm, r.containerHeight)
+      this.heightCm = r.containerHeight
     })
+    this.widthCm = widthCm
+    this.heightCm = heightCm + 2
+    this.lineHeightCm = size * MEASURED_LINE_PER_SIZE
 
     const so = global.scene.createSceneObject("BadgeText")
     so.setParent(content)

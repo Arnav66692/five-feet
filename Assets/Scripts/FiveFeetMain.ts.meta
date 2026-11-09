@@ -28,9 +28,9 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
+    badgeAngleDeg: false
     badgeDistanceCm: false
     badgeHysteresisCm: false
-    cardHeightAboveItemCm: false
     clearCard: false
     clearColorSec: false
     clearFillColor: false
@@ -69,7 +69,7 @@
       fallbackVerdict: Not sure. Ask your fire agency
       nothingToDoLine: Nothing to do.
       fixedReasonLine: Done. Nothing else to do here.
-      cardHeightAboveItemCm: !<float> 30.000000
+      badgeAngleDeg: 1.100000
       badgeDistanceCm: !<float> 250.000000
       badgeHysteresisCm: !<float> 5.000000
       clearLineColor: !<Vec4> {x: 0.500000, y: 1.000000, z: 0.550000, w: 1.000000}
@@ -101,7 +101,7 @@
     - '// @input string fallbackVerdict = "Not sure. Ask your fire agency" {"hint":"Verdict shown for an item that has no verdict"}'
     - '// @input string nothingToDoLine = "Nothing to do." {"hint":"Action line for an item with nothing to do"}'
     - '// @input string fixedReasonLine = "Done. Nothing else to do here." {"hint":"Reason line on the card of an item that is already fixed"}'
-    - "// @input float cardHeightAboveItemCm = 30 {\"hint\":\"Height (cm) of the card's center above the top of the pinched item (brief default 30 cm)\", \"widget\":\"slider\", \"min\":10, \"max\":80, \"step\":1}"
+    - "// @input float badgeAngleDeg = 1.1 {\"hint\":\"Angular height (degrees) of a far-away badge's status line, kept the same at any distance\", \"widget\":\"slider\", \"min\":0.4, \"max\":3, \"step\":0.05}"
     - '// @input float badgeDistanceCm = 250 {"hint":"Farther than this along the ground (cm), an item shows only its badge and a pinch does not open the card", "widget":"slider", "min":100, "max":500, "step":5}'
     - '// @input float badgeHysteresisCm = 5 {"hint":"Band (cm) around the badge distance that stops the badge flickering when the user stands right at it", "widget":"slider", "min":0, "max":30, "step":1}'
     - '// @input vec4 clearLineColor = "{0.5,1,0.55,1}" {"hint":"Line color once every item is fixed (keep light: the display is additive)", "widget":"color"}'

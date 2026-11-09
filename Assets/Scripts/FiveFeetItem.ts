@@ -151,6 +151,7 @@ export class FiveFeetItem extends BaseScriptComponent {
   private wasGlowing = false
   private far = false
   private farApplied = false
+  private tagSuppressed = false
   private fixed = false
   private visuals: RenderMeshVisual[] = []
 
@@ -166,7 +167,7 @@ export class FiveFeetItem extends BaseScriptComponent {
         const label = this.badgeLabel.trim().length > 0 ? this.badgeLabel : this.verdict
         this.badge.setStatus(label, this.verdictColor)
       }
-      this.interactable.onTriggerStart.add(() => this.pinchedEvent.invoke(this))
+      this.interactable.onTriggerStart.add(() => this.pinch())
       this.interactable.onHoverEnter.add(() => this.setHover(+1))
       this.interactable.onHoverExit.add(() => this.setHover(-1))
     })
@@ -198,8 +199,22 @@ export class FiveFeetItem extends BaseScriptComponent {
     if (this.farApplied && this.far === far) return
     this.far = far
     this.farApplied = true
-    if (this.tag) this.tag.sceneObject.enabled = !far
+    this.applyTagVisibility()
     if (this.badge) this.badge.setVisible(far)
+  }
+
+  /** Hide the name tag while this item's card is open (the card names the item). */
+  setTagSuppressed(on: boolean): void {
+    this.tagSuppressed = on
+    this.applyTagVisibility()
+  }
+
+  isTagVisible(): boolean {
+    return !!this.tag && this.tag.sceneObject.isEnabledInHierarchy
+  }
+
+  private applyTagVisibility(): void {
+    if (this.tag) this.tag.sceneObject.enabled = !this.far && !this.tagSuppressed
   }
 
   isFar(): boolean {
@@ -252,6 +267,60 @@ export class FiveFeetItem extends BaseScriptComponent {
     const local = this.getTransform().getInvertedWorldTransform().multiplyPoint(worldPoint)
     const h = this.hitBoxSizeCm.uniformScale(0.5).add(vec3.one().uniformScale(padCm))
     return Math.abs(local.x) <= h.x && Math.abs(local.y) <= h.y && Math.abs(local.z) <= h.z
+  }
+
+  /** Pinch this item from code (a resolved mouse or touch tap). Same as a SIK pinch. */
+  pinch(): void {
+    this.pinchedEvent.invoke(this)
+  }
+
+  /**
+   * Distance along a ray (world origin, unit direction) to this item's pinch box, or -1 on a miss.
+   * Used to resolve mouse and touch taps in the preview.
+   */
+  rayHitDistance(origin: vec3, dir: vec3): number {
+    const inv = this.getTransform().getInvertedWorldTransform()
+    const o = inv.multiplyPoint(origin)
+    const d = inv.multiplyDirection(dir)
+    const h = this.hitBoxSizeCm.uniformScale(0.5)
+    let tMin = -Infinity
+    let tMax = Infinity
+    const axes: [number, number, number][] = [
+      [o.x, d.x, h.x],
+      [o.y, d.y, h.y],
+      [o.z, d.z, h.z]
+    ]
+    for (const [oo, dd, hh] of axes) {
+      if (Math.abs(dd) < 1e-9) {
+        if (Math.abs(oo) > hh) return -1
+        continue
+      }
+      const t1 = (-hh - oo) / dd
+      const t2 = (hh - oo) / dd
+      tMin = Math.max(tMin, Math.min(t1, t2))
+      tMax = Math.min(tMax, Math.max(t1, t2))
+    }
+    if (tMax < Math.max(0, tMin)) return -1
+    // The local direction can be scaled by the transform; convert back to a world distance.
+    const hitLocal = o.add(d.uniformScale(Math.max(0, tMin)))
+    return this.getTransform().getWorldTransform().multiplyPoint(hitLocal).sub(origin).length
+  }
+
+  /** World-space bounds of the item's meshes (falls back to the pinch box when it has none). */
+  getVisualWorldBounds(): {min: vec3; max: vec3} {
+    let min: vec3 | null = null
+    let max: vec3 | null = null
+    for (const rmv of this.visuals) {
+      if (!rmv.sceneObject.isEnabledInHierarchy) continue
+      const a = rmv.worldAabbMin()
+      const b = rmv.worldAabbMax()
+      min = min ? new vec3(Math.min(min.x, a.x), Math.min(min.y, a.y), Math.min(min.z, a.z)) : a
+      max = max ? new vec3(Math.max(max.x, b.x), Math.max(max.y, b.y), Math.max(max.z, b.z)) : b
+    }
+    if (min && max) return {min, max}
+    const c = this.getTransform().getWorldPosition()
+    const h = this.hitBoxSizeCm.uniformScale(0.5)
+    return {min: c.sub(h), max: c.add(h)}
   }
 
   /** World point at the top-center of the item. */

@@ -66,6 +66,35 @@ export function standAtDistanceFrom(itemName: string, groundDistanceCm: number):
   return new vec3(now.x, 0, now.z).length
 }
 
+/**
+ * Turn the user's gaze onto a world point without moving the preview camera: rotate the whole
+ * FiveFeet rig around the eye so the point sits on the camera's view axis. Rotating the yard around
+ * the eye is the same, for everything the user sees, as the user turning their head.
+ */
+export function lookAtFromEye(worldPoint: vec3): void {
+  const rig = findSceneObjectByName("FiveFeet")
+  if (!rig) throw new Error(`FiveFeet rig not found`)
+  const cam = WorldCameraFinderProvider.getInstance()
+  const eye = cam.getWorldPosition()
+  const forward = cam.getTransform().forward.uniformScale(-1).normalize()
+  const toPoint = worldPoint.sub(eye).normalize()
+  const q = quat.rotationFromTo(toPoint, forward)
+  const t = rig.getTransform()
+  t.setWorldPosition(eye.add(q.multiplyVec3(t.getWorldPosition().sub(eye))))
+  t.setWorldRotation(q.multiply(t.getWorldRotation()))
+}
+
+/** Undo any tilt: put the rig's rotation back to `rotation`, keeping it level around the eye. */
+export function restoreRigRotation(rotation: quat): void {
+  const rig = findSceneObjectByName("FiveFeet")
+  if (!rig) throw new Error(`FiveFeet rig not found`)
+  const eye = WorldCameraFinderProvider.getInstance().getWorldPosition()
+  const t = rig.getTransform()
+  const q = rotation.multiply(t.getWorldRotation().invert())
+  t.setWorldPosition(eye.add(q.multiplyVec3(t.getWorldPosition().sub(eye))))
+  t.setWorldRotation(rotation)
+}
+
 /** Poll every stepMs until done() is true or timeoutMs passes. Returns whether done() became true. */
 export async function waitFor(done: () => boolean, timeoutMs: number, stepMs: number = 50): Promise<boolean> {
   let waited = 0

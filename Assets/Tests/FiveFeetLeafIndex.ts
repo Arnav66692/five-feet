@@ -27,7 +27,7 @@ export class FiveFeetLeafIndex extends BaseScriptComponent {
     {id: "c7-opener-timing", typename: FiveFeetOpenerTimingScenario.getTypeName()},
     {id: "c8-ember-glow", typename: FiveFeetEmberGlowScenario.getTypeName()},
     {id: "c9-distance-badge", typename: FiveFeetDistanceBadgeScenario.getTypeName()},
-    {id: "c10-card-scale", typename: FiveFeetCardScaleScenario.getTypeName()},
+    {id: "c10-card-in-view", typename: FiveFeetCardScaleScenario.getTypeName()},
     {id: "c11-action-lines", typename: FiveFeetActionLinesScenario.getTypeName()},
     {id: "c12-done-firewood", typename: FiveFeetDoneFirewoodScenario.getTypeName()},
     {id: "c13-zone-clear", typename: FiveFeetZoneClearScenario.getTypeName()}
