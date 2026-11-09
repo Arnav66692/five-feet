@@ -1,0 +1,89 @@
+- !<AssetImportMetadata/d67ec74b-ad64-4789-b64a-207ab31bfce5>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 13d56cbd-8ff4-4fab-a6ee-7a3027e1dcbf
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 13d56cbd-8ff4-4fab-a6ee-7a3027e1dcbf
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> d60d23cc-ba02-461c-a72b-7e7961f8ebe4
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/d60d23cc-ba02-461c-a72b-7e7961f8ebe4>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: 1a180442-316d-4fe5-a6f5-ba47b576d419
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    debugCollider: false
+    displayName: false
+    hitBoxSizeCm: false
+    hoverStrength: false
+    hoverTint: false
+    reason: false
+    tag: false
+    topOffsetCm: false
+    verdict: false
+    verdictColor: false
+    visualRoot: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - visualRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      tag: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      displayName: Item
+      verdict: ""
+      reason: ""
+      verdictColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+      hitBoxSizeCm: !<Vec3> {x: 40.000000, y: 40.000000, z: 40.000000}
+      topOffsetCm: !<float> 20.000000
+      hoverTint: !<Vec4> {x: 1.000000, y: 0.900000, z: 0.600000, w: 1.000000}
+      hoverStrength: 0.450000
+      debugCollider: false
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">FiveFeetItem – pinchable stand-in with a verdict</span>"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">References</span>"}'
+    - '// @ui {"widget":"group_start", "label":"References"}'
+    - "// @input SceneObject visualRoot {\"hint\":\"Parent of this item's mesh leaves. They are tinted while the item is aimed at\"}"
+    - '// @input AssignableType_1 tag {"hint":"Name tag above this item (optional)"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Verdict</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Verdict"}'
+    - '// @input string displayName = "Item" {"hint":"What this item is, for logs and tests"}'
+    - "// @input string verdict {\"hint\":\"Verdict shown in large text. Leave empty to show the fallback 'Not sure' verdict\"}"
+    - '// @input string reason {"hint":"One short reason shown under the verdict"}'
+    - '// @input vec4 verdictColor = "{1,1,1,1}" {"hint":"Color of the verdict text (keep light: the display is additive)", "widget":"color"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Interaction</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Interaction"}'
+    - '// @input vec3 hitBoxSizeCm = "{40,40,40}" {"hint":"Size (cm) of the pinch target box, centered on this object. Bigger than the visual = easier to hit"}'
+    - "// @input float topOffsetCm = 20 {\"hint\":\"Height (cm) from this object's origin up to the top of the item. The card floats above this point\"}"
+    - "// @input vec4 hoverTint = \"{1,0.9,0.6,1}\" {\"hint\":\"Color the item's meshes blend toward while aimed at\", \"widget\":\"color\"}"
+    - '// @input float hoverStrength = 0.45 {"hint":"How strongly the hover tint is applied (0 = none, 1 = full tint)", "widget":"slider", "min":0, "max":1, "step":0.05}'
+    - '// @input bool debugCollider {"hint":"Draw the pinch target box as a wireframe (debug)"}'
+    - '// @ui {"widget":"group_end"}'

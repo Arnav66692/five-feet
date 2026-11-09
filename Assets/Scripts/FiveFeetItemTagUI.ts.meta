@@ -1,0 +1,60 @@
+- !<AssetImportMetadata/8a298f63-7dfc-406e-bc63-2c53d6eeb6d4>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 3177137e-957c-405a-b62c-951a36bcfc5c
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 3177137e-957c-405a-b62c-951a36bcfc5c
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 98507443-8fc7-468c-8611-be3ca532fb1d
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/98507443-8fc7-468c-8611-be3ca532fb1d>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: a6c8f056-5752-4316-86e9-2cdd89c47f67
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    highlightColor: false
+    label: false
+    readingDistanceCm: false
+    restColor: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - label: Item
+      readingDistanceCm: !<float> 140.000000
+      restColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.850000}
+      highlightColor: !<Vec4> {x: 1.000000, y: 0.800000, z: 0.450000, w: 1.000000}
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">FiveFeetItemTagUI – item name tag</span>"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Settings</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Settings"}'
+    - '// @input string label = "Item" {"hint":"Name shown on the tag"}'
+    - '// @input float readingDistanceCm = 140 {"hint":"Distance (cm) the text is sized for", "widget":"slider", "min":80, "max":250, "step":5}'
+    - '// @input vec4 restColor = "{1,1,1,0.85}" {"hint":"Label color at rest (keep light: the display is additive)", "widget":"color"}'
+    - '// @input vec4 highlightColor = "{1,0.8,0.45,1}" {"hint":"Label color while the item is aimed at", "widget":"color"}'
+    - '// @ui {"widget":"group_end"}'

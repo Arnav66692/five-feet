@@ -1,0 +1,72 @@
+- !<AssetImportMetadata/7a47ab92-2d6b-420e-9981-bdacd5503c68>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 2811f978-0f37-4ccd-bfed-a02aefdf0d68
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 2811f978-0f37-4ccd-bfed-a02aefdf0d68
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 48fb87f5-a07e-452c-98c1-281700350939
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/48fb87f5-a07e-452c-98c1-281700350939>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: d69abe9e-a1ee-4f94-a8ba-c80e0b293237
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    autoHideSeconds: false
+    cardWidthCm: false
+    footerColor: false
+    footerLine: false
+    paddingCm: false
+    readingDistanceCm: false
+    reasonColor: false
+    rowGapCm: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - cardWidthCm: !<float> 25.000000
+      paddingCm: 1.500000
+      rowGapCm: 0.600000
+      readingDistanceCm: !<float> 140.000000
+      autoHideSeconds: !<float> 8.000000
+      footerLine: State rule. Check your local fire agency.
+      reasonColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.950000}
+      footerColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.700000}
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">FiveFeetVerdictCardUI – floating verdict card</span>"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Settings</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Settings"}'
+    - '// @input float cardWidthCm = 25 {"hint":"Card width in cm (brief default 25 cm)", "widget":"slider", "min":15, "max":40, "step":0.5}'
+    - '// @input float paddingCm = 1.5 {"hint":"Inner padding of the card in cm", "widget":"slider", "min":0.5, "max":4, "step":0.1}'
+    - '// @input float rowGapCm = 0.6 {"hint":"Gap between the verdict, reason and footer rows in cm", "widget":"slider", "min":0, "max":3, "step":0.1}'
+    - '// @input float readingDistanceCm = 140 {"hint":"Distance (cm) the text is sized for. The card is read from about 1.2 to 1.7 m away", "widget":"slider", "min":80, "max":250, "step":5}'
+    - '// @input float autoHideSeconds = 8 {"hint":"Seconds before the card hides itself after it is shown (brief default 8 s)", "widget":"slider", "min":2, "max":30, "step":0.5}'
+    - '// @input string footerLine = "State rule. Check your local fire agency." {"hint":"Footer line shown on every card"}'
+    - '// @input vec4 reasonColor = "{1,1,1,0.95}" {"hint":"Reason text color (keep light: the display is additive)", "widget":"color"}'
+    - '// @input vec4 footerColor = "{1,1,1,0.7}" {"hint":"Footer text color (keep light: the display is additive)", "widget":"color"}'
+    - '// @ui {"widget":"group_end"}'

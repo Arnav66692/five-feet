@@ -1,0 +1,94 @@
+- !<AssetImportMetadata/7961cf49-e331-4b41-8ff2-456109eeed62>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 3e110310-2b08-43c1-9d5a-40786e548839
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 3e110310-2b08-43c1-9d5a-40786e548839
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 1382ad71-6e60-4945-8330-6667d6ada9f9
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/1382ad71-6e60-4945-8330-6667d6ada9f9>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: f9b34fa3-2e2f-40c3-9b5d-88242a2700c1
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    drawDurationSec: false
+    fill: false
+    fillColor: false
+    fillFadeSec: false
+    houseWall: false
+    lineColor: false
+    lineThicknessCm: false
+    lineWidthCm: false
+    outerEdgeDistanceCm: false
+    outerLine: false
+    runWidthCm: false
+    showSideLegs: false
+    sideLeft: false
+    sideRight: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - houseWall: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      outerLine: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      sideLeft: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      sideRight: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      fill: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      outerEdgeDistanceCm: !<float> 152.000000
+      lineWidthCm: !<float> 5.000000
+      runWidthCm: !<float> 400.000000
+      lineThicknessCm: 0.600000
+      showSideLegs: true
+      drawDurationSec: !<float> 2.000000
+      fillFadeSec: 0.800000
+      lineColor: !<Vec4> {x: 1.000000, y: 0.680000, z: 0.320000, w: 1.000000}
+      fillColor: !<Vec4> {x: 1.000000, y: 0.600000, z: 0.250000, w: 0.140000}
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">FiveFeetZoneRing – Zone 0 line, 5 ft from the wall</span>"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">References</span>"}'
+    - '// @ui {"widget":"group_start", "label":"References"}'
+    - '// @input SceneObject houseWall {"hint":"House wall root. Its origin is on the wall face and its +Z points away from the wall"}'
+    - '// @input SceneObject outerLine {"hint":"Line parallel to the wall at the rule distance"}'
+    - '// @input SceneObject sideLeft {"hint":"Left leg from the wall out to the outer line"}'
+    - '// @input SceneObject sideRight {"hint":"Right leg from the outer line back to the wall"}'
+    - '// @input SceneObject fill {"hint":"Faint fill marking the zone"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Settings</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Settings"}'
+    - '// @input float outerEdgeDistanceCm = 152 {"hint":"Distance (cm) from the wall face to the OUTER edge of the line. Zone 0 is 5 ft = 152 cm", "widget":"slider", "min":50, "max":300, "step":1}'
+    - '// @input float lineWidthCm = 5 {"hint":"Width of the line (cm)", "widget":"slider", "min":1, "max":20, "step":0.5}'
+    - '// @input float runWidthCm = 400 {"hint":"Length of the zone along the wall (cm). Matches the wall width", "widget":"slider", "min":50, "max":1000, "step":10}'
+    - '// @input float lineThicknessCm = 0.6 {"hint":"Line thickness above the ground (cm)", "widget":"slider", "min":0.1, "max":3, "step":0.1}'
+    - '// @input bool showSideLegs = true {"hint":"Draw the legs from the wall out to the line so the zone reads as a boundary"}'
+    - '// @input float drawDurationSec = 2 {"hint":"Seconds the line takes to draw itself end to end (brief default 2 s)", "widget":"slider", "min":0.2, "max":10, "step":0.1}'
+    - '// @input float fillFadeSec = 0.8 {"hint":"Seconds for the faint fill to fade in after the line is drawn", "widget":"slider", "min":0, "max":5, "step":0.1}'
+    - '// @input vec4 lineColor = "{1,0.68,0.32,1}" {"hint":"Line color (light orange)", "widget":"color"}'
+    - '// @input vec4 fillColor = "{1,0.6,0.25,0.14}" {"hint":"Zone fill color. Alpha controls how faint it is", "widget":"color"}'
+    - '// @ui {"widget":"group_end"}'

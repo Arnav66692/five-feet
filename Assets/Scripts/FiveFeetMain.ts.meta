@@ -1,0 +1,79 @@
+- !<AssetImportMetadata/04085cc9-b417-4db3-aacc-c2c1b67d84e2>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> eb5bf820-6916-4bdb-860c-511b0e558922
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> eb5bf820-6916-4bdb-860c-511b0e558922
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 3a173462-4acb-47c0-8127-f914939119a6
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/3a173462-4acb-47c0-8127-f914939119a6>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  VersionPrerelease: ""
+  UpdateOrder: 0
+  ComponentUid: effce428-badb-438f-b6a1-48e635eb695c
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    cardHeightAboveItemCm: false
+    debugColliders: false
+    fallbackVerdict: false
+    itemsRoot: false
+    placeAtUserStart: false
+    sfxVolume: false
+    userEyeHeightCm: false
+    verdictCard: false
+    zoneRing: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - verdictCard: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      zoneRing: !<MappingBased.AssignableType_2> 00000000-0000-0000-0000-000000000000
+      itemsRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      placeAtUserStart: true
+      userEyeHeightCm: !<float> 160.000000
+      fallbackVerdict: Not sure. Ask your fire agency
+      cardHeightAboveItemCm: !<float> 30.000000
+      sfxVolume: 0.800000
+      debugColliders: false
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">FiveFeetMain – Zone 0 overlay orchestrator</span>"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">References</span>"}'
+    - '// @ui {"widget":"group_start", "label":"References"}'
+    - '// @input AssignableType_1 verdictCard {"hint":"The single floating verdict card"}'
+    - '// @input AssignableType_2 zoneRing {"hint":"The Zone 0 ring on the ground"}'
+    - '// @input SceneObject itemsRoot {"hint":"Parent of the pinchable items. Every child with a FiveFeetItem is wired automatically"}'
+    - '// @ui {"widget":"group_end"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"<span style=\"color: #60A5FA;\">Settings</span>"}'
+    - '// @ui {"widget":"group_start", "label":"Settings"}'
+    - '// @input bool placeAtUserStart = true {"hint":"At start, move the whole scene so the ground is under the user and the wall is straight ahead"}'
+    - '// @input float userEyeHeightCm = 160 {"hint":"User eye height above the ground (cm), used to put the ground under the user at start", "widget":"slider", "min":100, "max":200, "step":1}'
+    - '// @input string fallbackVerdict = "Not sure. Ask your fire agency" {"hint":"Verdict shown for an item that has no verdict"}'
+    - "// @input float cardHeightAboveItemCm = 30 {\"hint\":\"Height (cm) of the card's center above the top of the pinched item (brief default 30 cm)\", \"widget\":\"slider\", \"min\":10, \"max\":80, \"step\":1}"
+    - '// @input float sfxVolume = 0.8 {"hint":"Volume of the card and ring sounds", "widget":"slider", "min":0, "max":1, "step":0.05}'
+    - "// @input bool debugColliders {\"hint\":\"Draw every item's pinch target box as a wireframe (debug)\"}"
+    - '// @ui {"widget":"group_end"}'
