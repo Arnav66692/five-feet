@@ -27,6 +27,12 @@ const MIN_FORESHORTEN = 0.3 // never grow the wall panel more than 1/0.3 to make
 const LIFT_SEARCH_STEPS = 24
 const CARD_SFX = requireAsset("../GeneratedSFX/CardShow.wav") as AudioTrackAsset
 const RING_SFX = requireAsset("../GeneratedSFX/RingDraw.wav") as AudioTrackAsset
+// The three ways fire reaches a house (CAL FIRE: embers, flames, or heat), shown first on each fix card. Keyed by displayName.
+const THREAT_BY_ITEM: {[displayName: string]: string} = {
+  "Firewood stack": "Threat: embers, flames and heat.",
+  "Wood mulch bed": "Threat: embers, flames and heat.",
+  "Attached wood fence": "Threat: embers, flames and heat.",
+}
 
 @component
 export class FiveFeetMain extends BaseScriptComponent {
@@ -455,6 +461,8 @@ export class FiveFeetMain extends BaseScriptComponent {
     const hasVerdict = item.verdict.trim().length > 0
     let verdict = hasVerdict ? item.verdict : this.fallbackVerdict
     let reason = hasVerdict ? item.reason : ""
+    const threat = THREAT_BY_ITEM[item.displayName]
+    if (hasVerdict && threat) reason = threat + " " + reason
     let color = hasVerdict ? item.verdictColor : new vec4(1, 1, 1, 1)
     let action = item.action.trim().length > 0 ? item.action : this.nothingToDoLine
     if (item.isFixed()) {
