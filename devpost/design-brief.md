@@ -97,3 +97,47 @@ This part is for you, after CLAD finishes.
 5. **Label what you know.** Write "logic proven" next to anything the tests and preview show working, and "feel unproven" next to anything only real glasses could tell you (comfort over time, real hand tracking, real recognition).
 6. **Fix with design notes, not code.** Tell your agent what to change in design terms, for example: "Move the step card 15 cm lower and next to the pan. Make the Next button twice as big. Re-run the tests." If a fix takes under a minute, like nudging a panel, do it yourself in the scene.
 7. **Submit.** Record a video under 3 minutes of your Lens in the preview, public on YouTube. Make your repo public with your Lens Studio project and this `devpost/` folder. Details are on the hackathon site: https://learn-specs.devpost.com/resources
+
+---
+
+# Version 2 (Nov 9, 2026)
+
+Written after judging v1 against the judges' stated tastes. v1 showed the line and a verdict, then stopped. v2 shows why the 5 ft matters, tells you what to do, and lets you clear the zone. Every v1 done criterion still applies.
+
+## The one spatial moment, v2
+Embers drift down onto the yard. The ones that land inside the 5 ft of the house hit the firewood, the mulch and the fence and make them glow. Then the 5 ft line draws itself. I pinch the firewood, the card says "Move now" and "Move it out of the 5 ft zone", and I pinch "Done". The firewood slides out past the line and gets a green check. When every item that needed work is fixed, the line turns from orange to green and a card says "Zone 0 clear".
+
+## What changes
+- **Ember opener (first 6 s).** About 20 small glowing embers fall from above the roof over 3 s. Embers that land inside the zone on a combustible item (firewood, mulch, fence) make that item glow orange for about 1.5 s. Embers that land on the ground fade out. Then the line draws, as in v1. This is the demo hook, and it explains the rule without words.
+- **Cards that adapt to distance.** From farther than 2.5 m, each item shows only a small colored badge with its one-word status (Move now, Phase-in, Needs gap, OK). Within 2.5 m, pinching shows the full card. The full card scales with distance so the verdict text stays the same apparent size to the user, about 3 cm tall at 1 m, and is easy to read at 0.7 m to 3 m.
+- **What to do.** Each card has one action line below the reason:
+  - Firewood: "Move it out of the 5 ft zone."
+  - Wood mulch: "Swap it for gravel, pavers or bare soil."
+  - Wood fence: "Make the part touching the house metal or masonry."
+  - Small potted plant: no action. The card says "Nothing to do."
+- **Done button.** Cards with an action show one big "Done" button (UI Kit, at least 8 cm wide). Pinching it shows the fix:
+  - Firewood slides out to about 2.2 m from the wall over 1 s.
+  - The mulch bed changes to gray gravel.
+  - The first 1 m of fence next to the wall changes to dark gray metal.
+  - The item gets a green check badge and its card hides.
+- **Progress.** A small panel on the wall, above the items, reads "Zone 0: 0 of 3 fixed" and counts up. When all 3 are fixed, the line animates from orange to green over 1 s, and a card at the center of the wall says "Zone 0 clear" with the footer "State rule. Check your local fire agency."
+- **Voice.** When a card shows, the Lens reads out the verdict and the action with text to speech. If text to speech is not available, it logs a warning and the card still works.
+- **It looks like a real back yard.** The wall gets horizontal lap siding lines, a window, a back door, a roof eave with a gutter along the top, and a light warm color. The ground in front of the wall is dirt and patio inside the zone, with grass from 3 m out. Everything stays at real size and keeps the same positions as v1.
+
+## Done criteria, v2
+7. Within 6 s of start, at least 15 embers have spawned and the line has finished drawing.
+8. At least one combustible item glows during the ember opener, and the plant never glows.
+9. With the camera 3 m from an item, the item shows its badge and no full card is showing. With the camera 1.5 m away, pinching it shows the full card.
+10. The full card's world scale at 3 m is 2 to 2.4 times its scale at 1.5 m (text keeps the same apparent size).
+11. Each non-OK card shows its action line from the table above, and the plant card shows "Nothing to do."
+12. Pinching Done on the firewood moves it so its center is more than 1.8 m from the wall, and its check badge shows.
+13. After Done on firewood, mulch and fence, the progress panel reads "Zone 0: 3 of 3 fixed", the line material is green, and the "Zone 0 clear" card shows.
+14. All 6 v1 LEAF scenarios still pass.
+
+Not testable in preview (feel unproven): whether the voice is clear, and whether embers read as embers on real glasses.
+
+## Build notes for v2
+- Keep every v1 name, position and test working. Add new LEAF scenarios for criteria 7 to 13.
+- Keep the display additive: green and orange must stay light enough to read.
+- Use Spectacles Interaction Kit and UI Kit for the Done button so LEAF and the mouse can press it.
+- Do not install packages other than ones already in Packages/. If text to speech needs a module asset, create it from Lens Studio's built-in asset types, not a package.
